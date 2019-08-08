@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Table } from 'react-bootstrap';
+import './jobList.css';
 
 import TableRow from './TableRow';
 import ExtendedDisplay from './ExtendedDisplay';
@@ -17,7 +18,7 @@ export default class JobListContainer extends React.Component {
   }
 
   renderDataRow(item) {
-    if (item._id === this.state.activeId) return (<ExtendedDisplay key={item._id} onClick={() => this.showData(item._id)}></ExtendedDisplay>);
+    if (item._id === this.state.activeId) return (<ExtendedDisplay key={item._id} value={item} onClick={() => this.showData(item._id)}></ExtendedDisplay>);
     return (<TableRow key={item._id} value={item} onClick={() => this.showData(item._id)}></TableRow>);
   }
 
