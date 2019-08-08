@@ -6,11 +6,15 @@
   height: 100vh;
 }
 
+.fullHeight {
+  height: 100%;
+};
+
 .footer {
   width: 100%;
   background-color: grey;
 }
 
 .main-data {
-  background-color: cyan;
+  height: 100%;
 }

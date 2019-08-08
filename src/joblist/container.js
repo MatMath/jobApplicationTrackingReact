@@ -2,7 +2,8 @@ import React from 'react';
 
 import { Table } from 'react-bootstrap';
 
-import TableRow from './tableRow';
+import TableRow from './TableRow';
+import ExtendedDisplay from './ExtendedDisplay';
 
 export default class JobListContainer extends React.Component {
   constructor(props) {
@@ -11,14 +12,25 @@ export default class JobListContainer extends React.Component {
       jobListCount: 20,
       latest: MockAPI[0],
       list: MockAPI,
+      activeId: 1,
     };
   }
 
+  renderDataRow(item) {
+    if (item._id === this.state.activeId) return (<ExtendedDisplay key={item._id} onClick={() => this.showData(item._id)}></ExtendedDisplay>);
+    return (<TableRow key={item._id} value={item} onClick={() => this.showData(item._id)}></TableRow>);
+  }
+
+  showData(id) {
+    if(!id) return;
+    if(this.state.activeId === id) return this.setState({'activeId':0});
+    return this.setState({'activeId':id});
+  }
 
   render() {
     return (
-      <div className="container">
-        <h1> My Job list - {this.state.jobListCount}</h1>
+      <div className="container main-data">
+        <h1> List Length - {this.state.jobListCount}</h1>
         <div>Filter By:</div>
         <Table striped bordered hover>
           <thead>
@@ -31,9 +43,7 @@ export default class JobListContainer extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.state.list.map(item => (
-              <TableRow key={item._id} value={item}></TableRow>
-            ))}
+            {this.state.list.map(item => this.renderDataRow(item))}
           </tbody>
         </Table>
       </div>
@@ -53,12 +63,13 @@ const MockAPI = [
     "application":true,
     "answer_receive":true,
     "meeting":[{"date":"2017-10-27",
-    "participants":[],
-    "purpose":"First HR phone call",
-    "notes":"I just talked, they are using Angular2 and some new tech. It seems to be the in the research department section. "},{"date":"2017-11-09",
-    "participants":[],
-    "purpose":"All the interview",
-    "notes":"Director: Went good talked about the Cie, the role and what they do. \nHR: Lot of talking, he looked at the work visa. Still uncertain what ti will do for me :/ Super confusing Stamp system here. \nTechnical Interview: Not really technical, just talked randomly about all frameworks and stuff. and how we handled stuff. "}],
+      "participants":[],
+      "purpose":"First HR phone call",
+      "notes":"I just talked, they are using Angular2 and some new tech. It seems to be the in the research department section. "},{"date":"2017-11-09",
+      "participants":[],
+      "purpose":"All the interview",
+      "notes":"Director: Went good talked about the Cie, the role and what they do. \nHR: Lot of talking, he looked at the work visa. Still uncertain what ti will do for me :/ Super confusing Stamp system here. \nTechnical Interview: Not really technical, just talked randomly about all frameworks and stuff. and how we handled stuff. "}
+    ],
     "notes":"No Cover letter, only a Linked-in, and a PDF\nNo technical test, but I got refuse... The interview went well, but I said the truth that I am not a Expect in CSS and Bam, Out. Telling the truth get me nowhere.\n\nThey are hirering 100 people in the next year and I did not make the cut, Something is wrong... (full comment in the blog post)",
     "cover_letter":"",
     "email":"mathieu.k.legault@gmail.com",

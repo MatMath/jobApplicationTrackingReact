@@ -11,8 +11,6 @@ function App() {
     <div className="App">
       <TopNavBar></TopNavBar>
       <JobListContainer></JobListContainer>
-
-      <div className="container main-data">Main app to render</div>
       <div className="footer">Footer</div>
     </div>
   );
