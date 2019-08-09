@@ -10,3 +10,8 @@
 .label-value {
   display: flex;
 }
+
+.options-icons {
+  display: flex;
+  justify-content: space-evenly;
+}
