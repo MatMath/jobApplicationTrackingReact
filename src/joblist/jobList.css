@@ -2,3 +2,11 @@
   display: flex;
   justify-content: space-between;
 }
+
+.label-type {
+  min-width: 100px;
+}
+
+.label-value {
+  display: flex;
+}
