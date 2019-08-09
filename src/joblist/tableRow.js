@@ -8,9 +8,13 @@ export default function TableRow(props) {
     if (application === true) return (<FontAwesomeIcon icon={faCheck} color="green" title="Applied"></FontAwesomeIcon>);
     return (<FontAwesomeIcon icon={faBan} color="red" title="Not Applied"></FontAwesomeIcon>);
   }
+
+  var gotRejectedColor = function(value) {
+    if(value.offer === 'Rejected') return '#909090';
+  }
   
   return (
-    <tr onClick={props.onClick}>
+    <tr onClick={props.onClick} style={{backgroundColor: gotRejectedColor(props.value)}}>
       <td className="options-icons">
         {didIApplied(props.value.application)}
         <FontAwesomeIcon icon={faComments} color={(props.value.answer_receive)?'green':'red'} title="News received"></FontAwesomeIcon>
