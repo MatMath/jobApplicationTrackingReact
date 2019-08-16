@@ -14,6 +14,8 @@ export default class JobListContainer extends React.Component {
       latest: MockAPI[0],
       list: MockAPI,
       activeId: 1,
+      orderBy: '',
+      reverse: 1,
     };
   }
 
@@ -28,6 +30,44 @@ export default class JobListContainer extends React.Component {
     return this.setState({'activeId':id});
   }
 
+  orderListBy(data, name) {
+    console.log('OrderBy:', data, name)
+    let order = 1;
+    if (name === this.state.orderBy) {
+      order = -this.state.reverse;
+    }
+    let tmp;
+    switch (data) {
+      case 'options':
+        if (this.state.orderBy === 'options') return;
+        // Set the answer received first.
+        tmp = this.state.list.sort((a,b) => {
+          if (a.answer_receive === b.answer_receive) return 0;
+          if (a.answer_receive < b.answer_receive) return 1;
+          return -1;
+        });
+        break;
+      case 'date':
+        tmp = this.state.list.sort((a,b) => {
+          if (a.date === b.date) return 0;
+          if (a.date < b.date) return 1*order;
+          return -1 * order;
+        });
+        break;
+      case 'key':
+        // Set by super basic Alphanumeric sort.
+        tmp = this.state.list.sort((a,b) => {
+          if (!a[name]) { a[name] = ''};
+          if (!b[name]) { b[name] = ''};
+          return a[name].localeCompare(b[name]) *order;
+        });
+        break;
+      default:
+        break;
+    }
+    return this.setState({'orderBy': name, 'reverse': order, 'list': tmp});
+  }
+
   render() {
     return (
       <div className="container main-data">
@@ -36,11 +76,11 @@ export default class JobListContainer extends React.Component {
         <Table striped bordered hover>
           <thead>
             <tr>
-              <th>Options</th>
-              <th>Cie</th>
-              <th>Recruiters</th>
-              <th>Title</th>
-              <th>Date</th>
+              <th onClick={() => this.orderListBy('options')}>Options</th>
+              <th onClick={() => this.orderListBy('key', 'company')}>Cie</th>
+              <th onClick={() => this.orderListBy('key', 'recruiters')}>Recruiters</th>
+              <th onClick={() => this.orderListBy('key', 'title')}>Title</th>
+              <th onClick={() => this.orderListBy('date')}>Date</th>
             </tr>
           </thead>
           <tbody>
