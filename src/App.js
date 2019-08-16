@@ -1,4 +1,5 @@
 import React from 'react';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import './App.css';
 
@@ -10,7 +11,9 @@ function App() {
   return (
     <div className="App">
       <TopNavBar></TopNavBar>
-      <JobListContainer></JobListContainer>
+      <Router>
+        <Route path='/joblist' component={JobListContainer} />
+      </Router>
       <div className="footer">Footer</div>
     </div>
   );
