@@ -6,6 +6,7 @@ import './App.css';
 // components:
 import TopNavBar from './header/navbar';
 import JobListContainer from './joblist/container';
+import CieContainer from './cie/container';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <TopNavBar></TopNavBar>
       <Router>
         <Route path='/joblist' component={JobListContainer} />
+        <Route path='/cie' component={CieContainer} />
       </Router>
       <div className="footer">Footer</div>
     </div>
