@@ -4,9 +4,9 @@ import '../node_modules/bootstrap/dist/css/bootstrap.css';
 import './App.css';
 
 // components:
-import TopNavBar from './header/navbar';
-import JobListContainer from './joblist/container';
-import CieContainer from './cie/container';
+import TopNavBar from './header';
+import JobListContainer from './joblist';
+import CieContainer from './cie';
 
 function App() {
   return (
