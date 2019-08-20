@@ -36,7 +36,7 @@ export default class RecruitersTable extends React.Component {
     return (
     <div>
       <h1>Len: {this.state.list.length}</h1>
-      <Table>
+      <Table striped bordered hover>
         <thead>
           <tr>
             <td>Company</td>

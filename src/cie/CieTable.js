@@ -19,14 +19,13 @@ export default class CieTable extends React.Component {
   }
 
   renderDataRow(item) {
-    let location = <td onClick={() => this.showData(item._id)}>{item.location}</td>;
     if (item._id === this.state.activeId) {
-      location = (<CompanyRowOptions location={item.location} onClick={() => this.showData(item._id)}></CompanyRowOptions>);
+      return (<CompanyRowOptions key={item._id} item={item}></CompanyRowOptions>);
     };
     return (
       <tr key={item._id}>
         <td onClick={() => this.showData(item._id)}>{item.name}</td>
-        {location}
+        <td onClick={() => this.showData(item._id)}>{item.location}</td>
       </tr>
     );
   }
@@ -35,7 +34,7 @@ export default class CieTable extends React.Component {
     return (
       <div>
         <h1>LEN: {this.state.list.length}</h1>
-        <Table>
+        <Table striped bordered hover>
           <thead>
             <tr>
               <th>Name</th>
