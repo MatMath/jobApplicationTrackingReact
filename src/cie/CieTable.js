@@ -21,7 +21,7 @@ export default class CieTable extends React.Component {
   renderDataRow(item) {
     let location = <td onClick={() => this.showData(item._id)}>{item.location}</td>;
     if (item._id === this.state.activeId) {
-      location = (<CompanyRowOptions onClick={() => this.showData(item._id)}></CompanyRowOptions>);
+      location = (<CompanyRowOptions location={item.location} onClick={() => this.showData(item._id)}></CompanyRowOptions>);
     };
     return (
       <tr key={item._id}>

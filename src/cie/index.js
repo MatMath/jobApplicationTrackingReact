@@ -11,7 +11,7 @@ export default class CieContainer extends React.Component {
 
   render() {
     return (
-    <div>
+    <div className='container main-data'>
       <CieTable></CieTable>
       <RecruitersTable></RecruitersTable>
     </div>

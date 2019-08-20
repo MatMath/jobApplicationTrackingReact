@@ -1,17 +1,52 @@
 import React from 'react';
+import { Table } from 'react-bootstrap';
 
 export default class RecruitersTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       list: mockRecruitersList,
+      activeId: '',
     };
   }
+
+  showData(id) {
+    if(!id) return;
+    if(this.state.activeId === id) return this.setState({'activeId': ''});
+    return this.setState({'activeId':id});
+  }
+
+  renderDataRow (item) {
+    if (item._id === this.state.activeId) {
+      return (
+        <tr onClick={() => this.showData(item._id)}>
+          <td>SHOW EXTENDED VIEW</td>
+        </tr>
+      );
+    };
+    return (
+      <tr key={item._id} onClick={() => this.showData(item._id)}>
+        <td>{item.cie}</td>
+        <td>{item.name}</td>
+      </tr>
+    );
+  }
+
   render() {
     return (
     <div>
       <h1>Len: {this.state.list.length}</h1>
-      Recruiters table here
+      <Table>
+        <thead>
+          <tr>
+            <td>Company</td>
+            <td>Agent</td>
+          </tr>
+        </thead>
+        <tbody>
+            {this.state.list.map(item => this.renderDataRow(item))}
+        </tbody>
+      </Table>
     </div>
     );
   }
