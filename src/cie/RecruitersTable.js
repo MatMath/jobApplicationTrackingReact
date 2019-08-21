@@ -1,6 +1,8 @@
 import React from 'react';
 import { Table } from 'react-bootstrap';
 
+import RecruitersRowOptions from './RecruitersRowOptions';
+
 export default class RecruitersTable extends React.Component {
   constructor(props) {
     super(props);
@@ -18,11 +20,7 @@ export default class RecruitersTable extends React.Component {
 
   renderDataRow (item) {
     if (item._id === this.state.activeId) {
-      return (
-        <tr onClick={() => this.showData(item._id)}>
-          <td>SHOW EXTENDED VIEW</td>
-        </tr>
-      );
+      return (<RecruitersRowOptions key={item._id} item={item}></RecruitersRowOptions>);
     };
     return (
       <tr key={item._id} onClick={() => this.showData(item._id)}>
