@@ -14,3 +14,8 @@
 .main-data {
   height: 100%;
 }
+
+.spread {
+  display: flex;
+  justify-content: space-between;
+}
