@@ -5,7 +5,7 @@ import { Navbar, Nav, Form, Button } from 'react-bootstrap';
 function TopNavBar() {
   return (
     <Navbar bg="light" expand="lg" className="container">
-    <Navbar.Brand href="home">New Job</Navbar.Brand>
+    <Navbar.Brand href="job">New Job</Navbar.Brand>
     <Navbar.Toggle aria-controls="basic-navbar-nav" />
     <Navbar.Collapse id="basic-navbar-nav">
       <Nav className="mr-auto">

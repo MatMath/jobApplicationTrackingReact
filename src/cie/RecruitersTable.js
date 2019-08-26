@@ -13,7 +13,6 @@ export default class RecruitersTable extends React.Component {
   }
 
   showData(id) {
-    if(!id) return;
     if(this.state.activeId === id) return this.setState({'activeId': ''});
     return this.setState({'activeId':id});
   }
@@ -35,7 +34,7 @@ export default class RecruitersTable extends React.Component {
     <div>
       <h1>Len: {this.state.list.length}</h1>
       <Table striped bordered hover>
-        <thead>
+        <thead onClick={() => this.showData('')}>
           <tr>
             <td>Company</td>
             <td>Agent</td>

@@ -9,6 +9,7 @@ export default class RecruitersRowOptions extends React.Component {
       item: props.item,
     };
   }
+
   changeKey(key, value) {
     const tmp = {...this.state.item, [key]:value};
     this.setState({'item': tmp});

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Table, Button } from 'react-bootstrap';
+import { Table } from 'react-bootstrap';
 
 import CompanyRowOptions from './CompanyRowOptions';
 
@@ -13,7 +13,6 @@ export default class CieTable extends React.Component {
   }
 
   showData(id) {
-    if(!id) return;
     if(this.state.activeId === id) return this.setState({'activeId': ''});
     return this.setState({'activeId':id});
   }
@@ -35,7 +34,7 @@ export default class CieTable extends React.Component {
       <div>
         <h1>LEN: {this.state.list.length}</h1>
         <Table striped bordered hover>
-          <thead>
+          <thead onClick={() => this.showData('')}>
             <tr>
               <th>Name</th>
               <th>Location</th>
