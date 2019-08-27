@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 
 import { Table } from 'react-bootstrap';
 import './jobList.css';
@@ -6,49 +6,42 @@ import './jobList.css';
 import TableRow from './TableRow';
 import ExtendedDisplay from './ExtendedDisplay';
 
-export default class JobListContainer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      jobListCount: 20,
-      latest: MockAPI[0],
-      list: MockAPI,
-      activeId: 1,
-      orderBy: '',
-      reverse: 1,
-    };
+export default function JobListContainer() {
+  const [list, setList] = useState(MockAPI);
+  const [activeId, setActiveId] = useState(1);
+  const [orderBy, setOrderBy] = useState({name: '', direction: 1});
+  const jobListCount = list.length;
+
+  const renderDataRow = (item) => {
+    if (item._id === activeId) return (<ExtendedDisplay key={item._id} value={item} onClick={() => showData(item._id)}></ExtendedDisplay>);
+    return (<TableRow key={item._id} value={item} onClick={() => showData(item._id)}></TableRow>);
   }
 
-  renderDataRow(item) {
-    if (item._id === this.state.activeId) return (<ExtendedDisplay key={item._id} value={item} onClick={() => this.showData(item._id)}></ExtendedDisplay>);
-    return (<TableRow key={item._id} value={item} onClick={() => this.showData(item._id)}></TableRow>);
-  }
-
-  showData(id) {
+  const showData = (id) => {
     if(!id) return;
-    if(this.state.activeId === id) return this.setState({'activeId':0});
-    return this.setState({'activeId':id});
+    if(activeId === id) return setActiveId(0);
+    return setActiveId(id);
   }
 
-  orderListBy(data, name) {
+  const orderListBy = (data, name) => {
     console.log('OrderBy:', data, name)
     let order = 1;
-    if (name === this.state.orderBy) {
-      order = -this.state.reverse;
+    if (name === orderBy.name) {
+      order = -orderBy.direction;
     }
     let tmp;
     switch (data) {
       case 'options':
-        if (this.state.orderBy === 'options') return;
+        if (orderBy.name === 'options') return;
         // Set the answer received first.
-        tmp = this.state.list.sort((a,b) => {
+        tmp = list.sort((a,b) => {
           if (a.answer_receive === b.answer_receive) return 0;
           if (a.answer_receive < b.answer_receive) return 1;
           return -1;
         });
         break;
       case 'date':
-        tmp = this.state.list.sort((a,b) => {
+        tmp = list.sort((a,b) => {
           if (a.date === b.date) return 0;
           if (a.date < b.date) return 1*order;
           return -1 * order;
@@ -56,7 +49,7 @@ export default class JobListContainer extends React.Component {
         break;
       case 'key':
         // Set by super basic Alphanumeric sort.
-        tmp = this.state.list.sort((a,b) => {
+        tmp = list.sort((a,b) => {
           if (!a[name]) { a[name] = ''};
           if (!b[name]) { b[name] = ''};
           return a[name].localeCompare(b[name]) *order;
@@ -65,31 +58,30 @@ export default class JobListContainer extends React.Component {
       default:
         break;
     }
-    return this.setState({'orderBy': name, 'reverse': order, 'list': tmp});
+    setList(tmp);
+    return setOrderBy({'name': name, direction: order});
   }
 
-  render() {
-    return (
-      <div className="container main-data">
-        <h1> List Length - {this.state.jobListCount}</h1>
-        <div>Filter By:</div>
-        <Table striped bordered hover>
-          <thead>
-            <tr>
-              <th onClick={() => this.orderListBy('options')}>Options</th>
-              <th onClick={() => this.orderListBy('key', 'company')}>Cie</th>
-              <th onClick={() => this.orderListBy('key', 'recruiters')}>Recruiters</th>
-              <th onClick={() => this.orderListBy('key', 'title')}>Title</th>
-              <th onClick={() => this.orderListBy('date')}>Date</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.state.list.map(item => this.renderDataRow(item))}
-          </tbody>
-        </Table>
-      </div>
-    )
-  }
+  return (
+    <div className="container main-data">
+      <h1> List Length - {jobListCount}</h1>
+      <div>Filter By:</div>
+      <Table striped bordered hover>
+        <thead>
+          <tr>
+            <th onClick={() => orderListBy('options')}>Options</th>
+            <th onClick={() => orderListBy('key', 'company')}>Cie</th>
+            <th onClick={() => orderListBy('key', 'recruiters')}>Recruiters</th>
+            <th onClick={() => orderListBy('key', 'title')}>Title</th>
+            <th onClick={() => orderListBy('date')}>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {list.map(item => renderDataRow(item))}
+        </tbody>
+      </Table>
+    </div>
+  )
 }
 
 const MockAPI = [
