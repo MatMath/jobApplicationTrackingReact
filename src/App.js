@@ -16,8 +16,7 @@ function App() {
       <Router>
         <Route path='/joblist' component={JobListContainer} />
         <Route path='/cie' component={CieContainer} />
-        <Route path='/job/:id?' component={NewJobContainer} />
-        
+        <Route exact path={["/","/job/:id?"]} component={NewJobContainer} />
       </Router>
       <div className="footer">Footer</div>
     </div>
