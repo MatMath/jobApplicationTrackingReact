@@ -32,7 +32,7 @@ export default function CieTable() {
 
   const renderDataRow = (item) => {
     if (item._id === activeId) {
-      return (<CompanyRowOptions key={item._id} item={item}></CompanyRowOptions>);
+      return (<tr key={item._id}><td colSpan='2'><CompanyRowOptions item={item}></CompanyRowOptions></td></tr>);
     };
     return (
       <tr key={item._id}>

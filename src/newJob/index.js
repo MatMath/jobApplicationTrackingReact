@@ -1,6 +1,10 @@
+// Third party libs
 import React, { useState, useEffect } from "react";
-
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Typeahead } from 'react-bootstrap-typeahead'
+
+// Local components
+import CompanyRowOptions from '../cie/CompanyRowOptions';
 import { getCieList, getJobDataId, getParams, getRecruitersList } from '../apiEndpoint';
 import { Spinner, DisplayError } from "../utils";
 
@@ -23,7 +27,7 @@ const baseData = {
   acceptedOffer: undefined,
 };
 
-const baseEmptyCie = { 
+const baseEmptyCie = {
   _id: undefined,
   name: undefined,
   location: undefined,
@@ -55,14 +59,16 @@ export default function NewJobContainer(props) {
   // Async URL params handling
   const [fetching, setFetching] = useState((id)? true: false); // Set default value depending id a ID got passed.
   const [error, setError] = useState(undefined);
-
+  
+  // Display handling
+  const [data, setData] = useState(baseData);
   const [cie, setCie] = useState([]);
+  
   const [recruiters, setRecruiters] = useState([]);
   const [websiteList, setWebsiteList] = useState(['', 'Indeed', 'Linkedin', 'ZipRecruters', 'IrishJob.ie','Email', 'NA']); // Get from API
   const [typeOfPosition, setTypeOfPosition] = useState(['Front End Eng', 'NodeJs Eng', 'Senior Front-end', 'Senior Backend', 'Fullstack', 'Senior Fullstack']); // Get from API
-  // const [companyNameList, setCompanyNameList] = useState([]);
-  const [data, setData] = useState(baseData);
-  // const [emptyCie, setEmptyCie] = useState(baseEmptyCie);
+  const [companyNameList, setCompanyNameList] = useState([]);
+  const [addNewCie, setAddNewCie] = useState(baseEmptyCie);
   // const [meetingInfo, setMeetingInfo] = useState(baseMeetingInfo);
   
   useEffect(() => {
@@ -70,6 +76,7 @@ export default function NewJobContainer(props) {
       Promise.all([getCieList(), getJobDataId(), getParams(), getRecruitersList()])
       .then(arr => {
         console.log('Setting a bunch of stuff UseEffect AFTER Async render (once)');
+        setCompanyNameList(arr[0].map((item) => (item.name)));
         setCie(arr[0]);
         setData({...data, ...arr[1]});
         setWebsiteList(arr[2].website);
@@ -89,29 +96,57 @@ export default function NewJobContainer(props) {
     setData(data => ({...data, [name]:value}));
   }
 
+  const setCieTypeahead = (item) => {
+    console.log('TypeAheadDaya', item);
+    if (item.length > 0 && typeof item[0] === 'string') {
+      setAddNewCie(baseEmptyCie);
+      return setData({...data, company: item[0]});
+    }
+    // Add new company
+    if (item.length > 0) {
+      const name = item[0].company;
+      console.log('New Cie', name);
+      setAddNewCie({...baseEmptyCie, name});
+    }
+  };
+
+  const displayEditCie = () => {
+    if (addNewCie.name) return (
+      <div>
+        <Button onClick={() => setAddNewCie(baseEmptyCie)}>Use Existing company</Button>
+        <CompanyRowOptions item={addNewCie}></CompanyRowOptions>
+        <hr></hr>
+      </div>
+      );
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     // TODO: Trigger a refresh Top level when done.
-  }
+  };
 
   if(fetching) return (<Spinner></Spinner>);
-  // TODO: if fail to fetch from API add error handling.
   if(error) return (<DisplayError error={error}></DisplayError>);
   return (
   <div className='container main-data'>
+    <h1>New application</h1>
+    {displayEditCie()}
     <Form onSubmit={handleSubmit}>
-      <Form.Group as={Row}>
-        <Form.Label column sm="2">Select Company</Form.Label>
-        <Col sm="10">
-          <Form.Control
-            plaintext
-            required
-            value={data.company}
-            name='company'
-            onChange={changeKey}
-          />
-        </Col>
-      </Form.Group>
+    {(addNewCie.name)? "": (<Form.Group as={Row}>
+          <Form.Label column sm="2">Select Company</Form.Label>
+          <Col sm="10">
+            <Typeahead
+              id="company"
+              allowNew
+              newSelectionPrefix="Add a new company: "
+              
+              labelKey="company"
+              options={companyNameList}
+              placeholder="Choose an existing company..."
+              onChange={setCieTypeahead}
+            />
+          </Col>
+        </Form.Group>)}
       
       <Form.Group as={Row}>
         <Form.Label column sm="2">City</Form.Label>
