@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { getCieList, getJobDataId, getParams, getRecruitersList } from '../apiEndpoint';
+import { Spinner, DisplayError } from "../utils";
 
 const baseData = {
   _id: undefined,
@@ -93,9 +94,9 @@ export default function NewJobContainer(props) {
     // TODO: Trigger a refresh Top level when done.
   }
 
-  if(fetching) return (<div>...Fetching</div>);
+  if(fetching) return (<Spinner></Spinner>);
   // TODO: if fail to fetch from API add error handling.
-  if(error) return (<div>ERROR X while Fetching data</div>);
+  if(error) return (<DisplayError error={error}></DisplayError>);
   return (
   <div className='container main-data'>
     <Form onSubmit={handleSubmit}>

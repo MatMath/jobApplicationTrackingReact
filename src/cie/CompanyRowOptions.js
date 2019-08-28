@@ -21,7 +21,7 @@ export default class CompanyRowOptions extends React.Component {
   handleSubmit(event) {
     console.log(this.state.item);
     event.preventDefault();
-    // TODO: Trigger a refresh Top level when done.
+    // TODO: Trigger a refresh Top level when done & close the Open tab
   }
   deleteCompany(id) {
     console.log('DELETING: ', id);
