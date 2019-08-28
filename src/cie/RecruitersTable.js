@@ -1,56 +1,64 @@
-import React from 'react';
+// Third party libs
+import React, { useState, useEffect } from "react";
 import { Table } from 'react-bootstrap';
 
+// local components
 import RecruitersRowOptions from './RecruitersRowOptions';
+import { Spinner, DisplayError } from '../utils';
+import { getRecruitersList } from '../apiEndpoint';
 
-export default class RecruitersTable extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      list: mockRecruitersList,
-      activeId: '',
-    };
+export default function RecruitersTable() {
+  const [fetching, setFetching] = useState(true);
+  const [error, setError] = useState(undefined);
+
+  const [list, setList] = useState([]);
+  const [activeId, setActiveId] = useState('');
+
+  useEffect(() => {
+    getRecruitersList().then((data) => {
+      setList(data.sort((a,b) => a.name.localeCompare(b.name)));
+      setFetching(false)
+    })
+    .catch(err => {
+      setFetching(false);
+      setError(err.code);
+    });
+  }, []);
+
+  const showData = (id) => {
+    if(activeId === id) return setActiveId('');
+    return setActiveId(id);
   }
 
-  showData(id) {
-    if(this.state.activeId === id) return this.setState({'activeId': ''});
-    return this.setState({'activeId':id});
-  }
-
-  renderDataRow (item) {
-    if (item._id === this.state.activeId) {
+  const renderDataRow = (item) => {
+    if (item._id === activeId) {
       return (<RecruitersRowOptions key={item._id} item={item}></RecruitersRowOptions>);
     };
     return (
-      <tr key={item._id} onClick={() => this.showData(item._id)}>
+      <tr key={item._id} onClick={() => showData(item._id)}>
         <td>{item.cie}</td>
         <td>{item.name}</td>
       </tr>
     );
   }
 
-  render() {
-    return (
+  if (fetching) return ( <Spinner></Spinner>);
+  if(error) return (<DisplayError error={error}></DisplayError>);
+
+  return (
     <div>
-      <h1>Len: {this.state.list.length}</h1>
+      <h1>Len: {list.length}</h1>
       <Table striped bordered hover>
-        <thead onClick={() => this.showData('')}>
+        <thead onClick={() => showData('')}>
           <tr>
             <td>Company</td>
             <td>Agent</td>
           </tr>
         </thead>
         <tbody>
-            {this.state.list.map(item => this.renderDataRow(item))}
+            {list.map(item => renderDataRow(item))}
         </tbody>
       </Table>
     </div>
-    );
-  }
+  );
 }
-
-const mockRecruitersList = [
-  {"_id":"6ec2752","cie":"Reach Perso","name":"Kieran Hinphey","email":"mathieu.k.legault@gmail.com"},
-  {"_id":"6ec2753","cie":"Gempool","name":"Sarah McGrath","email":"mathieu.k.legault@gmail.com"},
-  {"_id":"ce31bdc","cie":"Software Placement","name":"Kenny Vaughan","email":"mathieu.k.legault@gmail.com","notes":"Good:\nSuper professional, Good english (no accent), Send most of the info by mail, and only call to confirm some stuff. \n\nStrange:\nLove to meet me in person. "}
-];
