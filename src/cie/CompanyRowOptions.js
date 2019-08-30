@@ -81,7 +81,7 @@ export default class CompanyRowOptions extends React.Component {
           />
         </Col>
       </Form.Group>
-      <Row>
+      {(this.props.noaction)? "": <Row>
         <Col className="spread">
           {/* Show Save only when not pristine? */}
           <Button variant="outline-success" type="submit"> Save </Button>
@@ -91,7 +91,7 @@ export default class CompanyRowOptions extends React.Component {
             onClick={() => this.deleteCompany(this.state.item._id)}>Delete
           </Button>
         </Col>
-      </Row>
+      </Row>}
     </Form>
   )
   }

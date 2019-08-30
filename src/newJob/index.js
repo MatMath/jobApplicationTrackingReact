@@ -5,6 +5,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
+import RecruitersRowOptions from '../cie/RecruitersRowOptions';
 import { getCieList, getJobDataId, getParams, getRecruitersList } from '../apiEndpoint';
 import { Spinner, DisplayError } from "../utils";
 
@@ -45,6 +46,13 @@ const baseEmptyCie = {
   link: undefined,
 };
 
+const baseEmptyRecruiters = {
+  _id:undefined,
+  cie:'',
+  name:'',
+  email:'',
+};
+
 const baseMeetingInfo = {
   date: undefined,
   participants: [],
@@ -62,9 +70,11 @@ export default function NewJobContainer(props) {
   
   // Display handling
   const [data, setData] = useState(baseData);
-  const [cie, setCie] = useState([]);
+  const [cie, setCie] = useState([]); // Original company from the API if we need to extreact from it. 
   
   const [recruiters, setRecruiters] = useState([]);
+  const [addNewRecruiters, setAddNewRecruiters] = useState(baseEmptyRecruiters);
+
   const [websiteList, setWebsiteList] = useState(['', 'Indeed', 'Linkedin', 'ZipRecruters', 'IrishJob.ie','Email', 'NA']); // Get from API
   const [typeOfPosition, setTypeOfPosition] = useState(['Front End Eng', 'NodeJs Eng', 'Senior Front-end', 'Senior Backend', 'Fullstack', 'Senior Fullstack']); // Get from API
   const [companyNameList, setCompanyNameList] = useState([]);
@@ -78,7 +88,7 @@ export default function NewJobContainer(props) {
       setCie(arr[0]);
       setWebsiteList(arr[1].website);
       setTypeOfPosition(arr[1].title);
-      setRecruiters(arr[2]);
+      setRecruiters(arr[2].map((item) => item.cie));
       if(arr[3]) { setData({...data, ...arr[3]}); }
       setFetching(false);
     })
@@ -90,9 +100,10 @@ export default function NewJobContainer(props) {
   
   const changeKey = (event) => {
     const {name, value} = event.target;
-    setData(data => ({...data, [name]:value}));
+    setData({...data, [name]:value});
   }
 
+  // TypeAhead helper
   const setCieTypeahead = (item) => {
     if (item.length > 0 && typeof item[0] === 'string') {
       setAddNewCie(baseEmptyCie);
@@ -108,16 +119,56 @@ export default function NewJobContainer(props) {
   const displayEditCie = () => {
     if (addNewCie.name) return (
       <div>
-        <Button onClick={() => setAddNewCie(baseEmptyCie)}>Use Existing company</Button>
-        <CompanyRowOptions item={addNewCie}></CompanyRowOptions>
+        <Button onClick={() => setAddNewCie(baseEmptyCie)}>Use existing company</Button>
+        <CompanyRowOptions noaction={true} item={addNewCie}></CompanyRowOptions>
         <hr></hr>
       </div>
       );
   };
 
+  const setRecruiterTypeahead = (item) => {
+    if (item.length > 0 && typeof item[0] === 'string') {
+      setAddNewRecruiters(baseEmptyRecruiters);
+      return setData({...data, recruiters: item[0]});
+    }
+    // Add new recruiters
+    if (item.length > 0) {
+      const name = item[0].recruiter;
+      setAddNewRecruiters({...addNewRecruiters, name});
+    }
+  };
+
+  const displayEditRecruiters = () => {
+    if (addNewRecruiters.name) {
+      return (
+        <div>
+          <Button onClick={() => setAddNewRecruiters(baseEmptyRecruiters)}>Use existing recruiters</Button>
+          <RecruitersRowOptions noaction={true} item={addNewRecruiters}></RecruitersRowOptions>
+          <hr></hr>
+        </div>
+      );
+    }
+  }
+
+  const setTitleTypeahead = (item) => {
+    if (item.length > 0 && typeof item[0] === 'string') {
+      return setData({...data, title: item[0]});
+    }
+    // "Add new" option
+    if (item.length > 0) {
+      return setData({...data, title: item[0].title});
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // TODO: Trigger a refresh Top level when done.
+    // Save the NEW copmpany if it is a new one
+    // Save the Recruiters if it is a new one -> addNewRecruiters
+    // Then save/Resave the new Job
+
+    setAddNewRecruiters(baseEmptyRecruiters);
+    setAddNewCie(baseEmptyCie)
+    // TODO: Trigger a refresh Top level when done. ie: blank data
   };
 
   if(fetching) return (<Spinner></Spinner>);
@@ -126,22 +177,39 @@ export default function NewJobContainer(props) {
   <div className='container main-data'>
     <h1>New application</h1>
     {displayEditCie()}
+    {displayEditRecruiters()}
     <Form onSubmit={handleSubmit}>
     {(addNewCie.name)? "": (<Form.Group as={Row}>
-          <Form.Label column sm="2">Select Company</Form.Label>
-          <Col sm="10">
-            <Typeahead
-              id="company"
-              allowNew
-              newSelectionPrefix="Add a new company: "
-              
-              labelKey="company"
-              options={companyNameList}
-              placeholder="Choose an existing company..."
-              onChange={setCieTypeahead}
-            />
-          </Col>
-        </Form.Group>)}
+        <Form.Label column sm="2">Select Company</Form.Label>
+        <Col sm="10">
+          <Typeahead
+            id="company"
+            allowNew
+            newSelectionPrefix="Add a new company: "
+            
+            labelKey="company"
+            options={companyNameList}
+            placeholder="Choose an existing company..."
+            onChange={setCieTypeahead}
+          />
+        </Col>
+      </Form.Group>)}
+
+      {(addNewRecruiters.name)? "": (<Form.Group as={Row}>
+        <Form.Label column sm="2">Select Recruiters</Form.Label>
+        <Col sm="10">
+          <Typeahead
+            id="recruiter"
+            allowNew
+            newSelectionPrefix="Add a new recruiter: "
+            
+            labelKey="recruiter"
+            options={recruiters}
+            placeholder="Choose recruiters..."
+            onChange={setRecruiterTypeahead}
+          />
+        </Col>
+      </Form.Group>)}
       
       <Form.Group as={Row}>
         <Form.Label column sm="2">City</Form.Label>
@@ -149,7 +217,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            value={data.location}
+            defaultValue={data.location}
             name="location"
             onChange={changeKey}
           />
@@ -159,12 +227,15 @@ export default function NewJobContainer(props) {
       <Form.Group as={Row}>
         <Form.Label column sm="2">Title</Form.Label>
         <Col sm="10">
-          <Form.Control
-            plaintext
-            required
-            value={data.title}
-            name="title"
-            onChange={changeKey}
+          <Typeahead
+            id="title"
+            allowNew
+            newSelectionPrefix="Title of the position: "
+            
+            labelKey="title"
+            options={typeOfPosition}
+            placeholder="Enter a new Position..."
+            onChange={setTitleTypeahead}
           />
         </Col>
       </Form.Group>
@@ -175,7 +246,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            value={data.website}
+            defaultValue={data.website}
             name="website"
             onChange={changeKey}
           />
@@ -188,7 +259,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            value={data.description}
+            defaultValue={data.description}
             name="description"
             onChange={changeKey}
           />
@@ -204,7 +275,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            value={data.application}
+            defaultValue={data.application}
             name="application"
             onChange={changeKey}
           />
@@ -217,7 +288,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            value={data.notes}
+            defaultValue={data.notes}
             name="notes"
             onChange={changeKey}
           />
@@ -230,7 +301,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            value={data.cover_letter}
+            defaultValue={data.cover_letter}
             name="cover_letter"
             onChange={changeKey}
           />

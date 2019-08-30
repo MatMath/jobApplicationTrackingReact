@@ -32,7 +32,9 @@ export default function RecruitersTable() {
 
   const renderDataRow = (item) => {
     if (item._id === activeId) {
-      return (<RecruitersRowOptions key={item._id} item={item}></RecruitersRowOptions>);
+      return (<tr><td colSpan='2'>
+        <RecruitersRowOptions key={item._id} item={item}></RecruitersRowOptions>
+      </td></tr>);
     };
     return (
       <tr key={item._id} onClick={() => showData(item._id)}>
