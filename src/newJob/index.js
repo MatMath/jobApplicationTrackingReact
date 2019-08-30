@@ -57,7 +57,7 @@ export default function NewJobContainer(props) {
   const {id} = props.match.params;
  
   // Async URL params handling
-  const [fetching, setFetching] = useState((id)? true: false); // Set default value depending id a ID got passed.
+  const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(undefined);
   
   // Display handling
@@ -72,23 +72,20 @@ export default function NewJobContainer(props) {
   // const [meetingInfo, setMeetingInfo] = useState(baseMeetingInfo);
   
   useEffect(() => {
-    if(fetching) {
-      Promise.all([getCieList(), getJobDataId(), getParams(), getRecruitersList()])
-      .then(arr => {
-        console.log('Setting a bunch of stuff UseEffect AFTER Async render (once)');
-        setCompanyNameList(arr[0].map((item) => (item.name)));
-        setCie(arr[0]);
-        setData({...data, ...arr[1]});
-        setWebsiteList(arr[2].website);
-        setTypeOfPosition(arr[2].title);
-        setRecruiters(arr[3]); // TODO: Wrap inside a promise.all(data,cie,recruiters)
-        setFetching(false);
-      })
-      .catch((err) => {
-        setFetching(false);
-        setError('404 not found');
-      })
-    }
+    Promise.all([getCieList(), getParams(), getRecruitersList(), getJobDataId(id)])
+    .then(arr => {
+      setCompanyNameList(arr[0].map((item) => (item.name)));
+      setCie(arr[0]);
+      setWebsiteList(arr[1].website);
+      setTypeOfPosition(arr[1].title);
+      setRecruiters(arr[2]);
+      if(arr[3]) { setData({...data, ...arr[3]}); }
+      setFetching(false);
+    })
+    .catch((err) => {
+      setFetching(false);
+      setError('404 not found');
+    })
   }, []);
   
   const changeKey = (event) => {
@@ -97,7 +94,6 @@ export default function NewJobContainer(props) {
   }
 
   const setCieTypeahead = (item) => {
-    console.log('TypeAheadDaya', item);
     if (item.length > 0 && typeof item[0] === 'string') {
       setAddNewCie(baseEmptyCie);
       return setData({...data, company: item[0]});
@@ -105,7 +101,6 @@ export default function NewJobContainer(props) {
     // Add new company
     if (item.length > 0) {
       const name = item[0].company;
-      console.log('New Cie', name);
       setAddNewCie({...baseEmptyCie, name});
     }
   };

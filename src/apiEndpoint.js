@@ -1,4 +1,7 @@
+// NOTE: To optimize here we could add the Store to avoid multiple API call of the same route over and over.
 const getJobDataId = (id) => new Promise((resolve) => {
+  if (!id) return resolve(undefined);
+
   setTimeout(() => {
     resolve({
       "_id":"5a0db7b422d9d554d0339e07",
