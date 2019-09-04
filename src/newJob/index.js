@@ -150,15 +150,16 @@ export default function NewJobContainer(props) {
     }
   }
 
-  const setTitleTypeahead = (item) => {
+  const setKeyTypeahead = (item, key) => {
     if (item.length > 0 && typeof item[0] === 'string') {
-      return setData({...data, title: item[0]});
+      return setData({...data, [key]: item[0]});
     }
     // "Add new" option
     if (item.length > 0) {
-      return setData({...data, title: item[0].title});
+      return setData({...data, [key]: item[0].title});
     }
   };
+
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -235,20 +236,23 @@ export default function NewJobContainer(props) {
             labelKey="title"
             options={typeOfPosition}
             placeholder="Enter a new Position..."
-            onChange={setTitleTypeahead}
+            onChange={(item) => setKeyTypeahead(item, 'title')}
           />
         </Col>
       </Form.Group>
       
       <Form.Group as={Row}>
-        <Form.Label column sm="2">Select Website</Form.Label>
+        <Form.Label column sm="2">Found on Website:</Form.Label>
         <Col sm="10">
-          <Form.Control
-            plaintext
-            required
-            defaultValue={data.website}
-            name="website"
-            onChange={changeKey}
+        <Typeahead
+            id="website"
+            allowNew
+            newSelectionPrefix="Add new website: "
+            
+            labelKey="website"
+            options={websiteList}
+            placeholder="Found on what website:"
+            onChange={(item) => setKeyTypeahead(item, 'website')}
           />
         </Col>
       </Form.Group>
@@ -266,8 +270,19 @@ export default function NewJobContainer(props) {
         </Col>
       </Form.Group>
       
-      TODO: DATE PICKER HERE
-      {/* Date Picker: {data.date} */}
+      <Form.Group as={Row}>
+        <Form.Label column sm="2">Date</Form.Label>
+        <Col sm="10">
+          <Form.Control
+            plaintext
+            type="date"
+            required
+            defaultValue={data.date}
+            name="date"
+            onChange={changeKey}
+          />
+        </Col>
+      </Form.Group>
 
       <Form.Group as={Row}>
         <Form.Label column sm="2">Did you apply</Form.Label>
