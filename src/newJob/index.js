@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead'
+import moment from 'moment';
 
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
@@ -18,7 +19,7 @@ const baseData = {
   company: undefined,
   title: undefined,
   description: undefined,
-  date: new Date(),
+  date: moment().format('YYYY-MM-DD'), // The "input" need the specific STRING format of YYYY-MM-DD not the Date object. 
   application: false,
   answer_receive: false,
   meeting: [],
@@ -277,7 +278,7 @@ export default function NewJobContainer(props) {
             plaintext
             type="date"
             required
-            defaultValue={data.date}
+            value={data.date}
             name="date"
             onChange={changeKey}
           />
