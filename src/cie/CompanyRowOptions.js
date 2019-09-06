@@ -24,10 +24,6 @@ export default class CompanyRowOptions extends React.Component {
     event.preventDefault();
     // TODO: Trigger a refresh Top level when done & close the Open tab
   }
-  deleteCompany(id) {
-    console.log('DELETING: ', id);
-    // TODO: POP-UP Warning & Trigger a refresh Top level when done.
-  }
   render() {
   return (
     <Form onSubmit={this.handleSubmit}>
@@ -88,7 +84,7 @@ export default class CompanyRowOptions extends React.Component {
           {/* I no ID then dont display Delete Button??? */}
           <Button 
             variant="outline-danger"
-            onClick={() => this.deleteCompany(this.state.item._id)}>Delete
+            onClick={() => this.props.removeIdFromList(this.state.item._id)}>Delete
           </Button>
         </Col>
       </Row>}

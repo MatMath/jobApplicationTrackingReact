@@ -32,8 +32,8 @@ export default function RecruitersTable() {
 
   const renderDataRow = (item) => {
     if (item._id === activeId) {
-      return (<tr><td colSpan='2'>
-        <RecruitersRowOptions key={item._id} item={item}></RecruitersRowOptions>
+      return (<tr key={item._id}><td colSpan='2'>
+        <RecruitersRowOptions removeIdFromList={removeIdFromList} item={item}></RecruitersRowOptions>
       </td></tr>);
     };
     return (
@@ -42,6 +42,12 @@ export default function RecruitersTable() {
         <td>{item.name}</td>
       </tr>
     );
+  }
+
+  const removeIdFromList = (id) => {
+    // Send a API request to the BE
+    // .Then() remove the Item only instead of forcing a full fetch+refresh.
+    setList(list.filter((item => item._id !== id)));
   }
 
   if (fetching) return ( <Spinner></Spinner>);

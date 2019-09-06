@@ -29,7 +29,14 @@ export default function JobListContainer() {
   }, []);
 
   const renderDataRow = (item) => {
-    if (item._id === activeId) return (<ExtendedDisplay key={item._id} value={item} onClick={() => showData(item._id)}></ExtendedDisplay>);
+    if (item._id === activeId) return (
+        <ExtendedDisplay
+          removeIdFromList={removeIdFromList}
+          key={item._id}
+          value={item}
+          onClick={() => showData(item._id)}>
+        </ExtendedDisplay>
+      );
     return (<TableRow key={item._id} value={item} onClick={() => showData(item._id)}></TableRow>);
   }
 
@@ -76,6 +83,13 @@ export default function JobListContainer() {
     setList(tmp);
     return setOrderBy({'name': name, direction: order});
   }
+
+  const removeIdFromList = (id) => {
+    // Send a API request to the BE
+    // .Then() remove the Item only instead of forcing a full fetch+refresh.
+    setList(list.filter((item => item._id !== id)));
+  }
+
   if (fetching) return ( <Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
   return (

@@ -32,7 +32,11 @@ export default function CieTable() {
 
   const renderDataRow = (item) => {
     if (item._id === activeId) {
-      return (<tr key={item._id}><td colSpan='2'><CompanyRowOptions item={item}></CompanyRowOptions></td></tr>);
+      return (
+        <tr key={item._id}><td colSpan='2'>
+          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item}></CompanyRowOptions>
+        </td></tr>
+      );
     };
     return (
       <tr key={item._id}>
@@ -40,6 +44,12 @@ export default function CieTable() {
         <td onClick={() => showData(item._id)}>{item.location}</td>
       </tr>
     );
+  }
+
+  const removeIdFromList = (id) => {
+    // Send a API request to the BE
+    // .Then() remove the Item only instead of forcing a full fetch+refresh.
+    setList(list.filter((item => item._id !== id)));
   }
   
   if (fetching) return ( <Spinner></Spinner>);

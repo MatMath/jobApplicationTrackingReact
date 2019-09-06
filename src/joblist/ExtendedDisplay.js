@@ -6,7 +6,8 @@ import { Row, Col, Button } from 'react-bootstrap';
 function ExtendedDisplay(props) {
   const editThis = (id) => {
     props.history.push(`/job/${id}`);
-  }
+  };
+
   return (
     <tr className="extended-display">
       <td colSpan="5">
@@ -26,7 +27,7 @@ function ExtendedDisplay(props) {
         <Row>
           <Col className="spread">
             <Button variant="outline-info" onClick={() => editThis(props.value._id)}>Edit</Button>
-            <Button variant="outline-danger">Delete</Button>
+            <Button variant="outline-danger" onClick={() => props.removeIdFromList(props.value._id)}>Delete</Button>
           </Col>
         </Row>
       </td>

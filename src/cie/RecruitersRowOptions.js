@@ -15,13 +15,8 @@ export default class RecruitersRowOptions extends React.Component {
     this.setState({'item': tmp});
   }
   handleSubmit(event) {
-    console.log(this.state.item);
     event.preventDefault();
-    // TODO: Trigger a refresh Top level when done.
-  }
-  deleteCompany(id) {
-    console.log('DELETING: ', id);
-    // TODO: POP-UP Warning & Trigger a refresh Top level when done.
+    // TODO: Trigger a refresh Top level when done? or simply replace it from the list?.
   }
   render() {
     return (
@@ -64,7 +59,7 @@ export default class RecruitersRowOptions extends React.Component {
             <Button variant="outline-success" type="submit"> Save </Button>
             <Button 
               variant="outline-danger"
-              onClick={() => this.deleteCompany(this.state.item._id)}>Delete
+              onClick={() => this.props.removeIdFromList(this.state.item._id)}>Delete
             </Button>
           </Col>
         </Row>}
