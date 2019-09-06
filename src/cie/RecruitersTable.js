@@ -5,7 +5,7 @@ import { Table } from 'react-bootstrap';
 // local components
 import RecruitersRowOptions from './RecruitersRowOptions';
 import { Spinner, DisplayError } from '../utils';
-import { getRecruitersList } from '../apiEndpoint';
+import { getAPIData } from '../apiEndpoint';
 
 export default function RecruitersTable() {
   const [fetching, setFetching] = useState(true);
@@ -15,7 +15,7 @@ export default function RecruitersTable() {
   const [activeId, setActiveId] = useState('');
 
   useEffect(() => {
-    getRecruitersList().then((data) => {
+    getAPIData('recruiters').then((data) => {
       setList(data.sort((a,b) => a.name.localeCompare(b.name)));
       setFetching(false)
     })

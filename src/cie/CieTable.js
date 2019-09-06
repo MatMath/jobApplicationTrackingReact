@@ -4,7 +4,7 @@ import { Table } from 'react-bootstrap';
 
 // Local components
 import CompanyRowOptions from './CompanyRowOptions';
-import { getCieList } from '../apiEndpoint';
+import { getAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
 
 export default function CieTable() {
@@ -15,7 +15,7 @@ export default function CieTable() {
   const [activeId, setActiveId] = useState('');
 
   useEffect(() => {
-    getCieList().then((data) => {
+    getAPIData('cie').then((data) => {
       setList(data.sort((a,b) => a.name.localeCompare(b.name)));
       setFetching(false)
     })

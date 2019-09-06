@@ -5,7 +5,7 @@ import './jobList.css';
 
 import { Spinner, DisplayError } from '../utils';
 
-import { getJobList } from '../apiEndpoint';
+import { getAPIData } from '../apiEndpoint';
 import TableRow from './TableRow';
 import ExtendedDisplay from './ExtendedDisplay';
 
@@ -19,7 +19,7 @@ export default function JobListContainer() {
   const jobListCount = list.length;
 
   useEffect(() => {
-    getJobList().then((data) => {
+    getAPIData('jobList').then((data) => {
       setList(data);
       setFetching(false);
     }).catch(err => {

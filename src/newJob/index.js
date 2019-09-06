@@ -7,7 +7,7 @@ import moment from 'moment';
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
 import RecruitersRowOptions from '../cie/RecruitersRowOptions';
-import { getCieList, getJobDataId, getParams, getRecruitersList } from '../apiEndpoint';
+import { getAPIData, postAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from "../utils";
 
 const baseData = {
@@ -83,7 +83,7 @@ export default function NewJobContainer(props) {
   // const [meetingInfo, setMeetingInfo] = useState(baseMeetingInfo);
   
   useEffect(() => {
-    Promise.all([getCieList(), getParams(), getRecruitersList(), getJobDataId(id)])
+    Promise.all([getAPIData('cie'), getAPIData('param'), getAPIData('recruiters'), getAPIData('jobId', id)])
     .then(arr => {
       setCompanyNameList(arr[0].map((item) => (item.name)));
       setCie(arr[0]);
