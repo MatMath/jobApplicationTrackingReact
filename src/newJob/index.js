@@ -100,8 +100,9 @@ export default function NewJobContainer(props) {
   }, []);
   
   const changeKey = (event) => {
-    const {name, value} = event.target;
-    setData({...data, [name]:value});
+    const {name, value, type} = event.target;
+    if (type === 'checkbox') return setData({...data, [name]:!data[name]});
+    return setData({...data, [name]:value});
   }
 
   // TypeAhead helper
@@ -288,11 +289,14 @@ export default function NewJobContainer(props) {
       <Form.Group as={Row}>
         <Form.Label column sm="2">Did you apply</Form.Label>
         <Col sm="10">
-          <Form.Control
-            plaintext
-            required
-            defaultValue={data.application}
+          {/* Change that to a cuter Slider button???? */}
+          <Form.Check 
+            custom
             name="application"
+            type='checkbox'
+            id='custom-checkbox'
+            value={data.application}
+            label='Of course I did!!!'
             onChange={changeKey}
           />
         </Col>
@@ -302,8 +306,8 @@ export default function NewJobContainer(props) {
         <Form.Label column sm="2">Notes</Form.Label>
         <Col sm="10">
           <Form.Control
-            plaintext
-            required
+            as="textarea"
+            rows="4"
             defaultValue={data.notes}
             name="notes"
             onChange={changeKey}
