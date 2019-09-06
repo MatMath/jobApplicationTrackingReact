@@ -40,7 +40,6 @@ export default function JobListContainer() {
   }
 
   const orderListBy = (data, name) => {
-    console.log('OrderBy:', data, name)
     let order = 1;
     if (name === orderBy.name) {
       order = -orderBy.direction;

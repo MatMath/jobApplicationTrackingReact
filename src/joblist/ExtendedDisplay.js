@@ -1,8 +1,12 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom'
 
 import { Row, Col, Button } from 'react-bootstrap';
 
-export default function ExtendedDisplay(props) {
+function ExtendedDisplay(props) {
+  const editThis = (id) => {
+    props.history.push(`/job/${id}`);
+  }
   return (
     <tr className="extended-display">
       <td colSpan="5">
@@ -21,7 +25,7 @@ export default function ExtendedDisplay(props) {
         </div>
         <Row>
           <Col className="spread">
-            <Button variant="outline-info">Edit</Button>
+            <Button variant="outline-info" onClick={() => editThis(props.value._id)}>Edit</Button>
             <Button variant="outline-danger">Delete</Button>
           </Col>
         </Row>
@@ -29,3 +33,4 @@ export default function ExtendedDisplay(props) {
     </tr>
   )
 }
+export default withRouter(ExtendedDisplay);
