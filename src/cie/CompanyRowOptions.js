@@ -1,5 +1,6 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import { postAPIData } from '../apiEndpoint';
 
 export default class CompanyRowOptions extends React.Component {
   constructor(props) {
@@ -19,9 +20,15 @@ export default class CompanyRowOptions extends React.Component {
     this.setState({'item': tmp});
   }
   handleSubmit(event) {
+    event.preventDefault();
+    
+    postAPIData('cie', this.state.item)
+    .then((resp) => {
+      // TODO: Reset State to default
+      console.log('resp is:', resp);
+    });
     // if no ID it could be inside a NEW Job or added from the CIE page... Save & adjust the ID
     console.log(this.state.item);
-    event.preventDefault();
     // TODO: Trigger a refresh Top level when done & close the Open tab
   }
   render() {

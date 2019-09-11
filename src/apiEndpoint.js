@@ -18,9 +18,38 @@ const getAPIData = (type, id) => {
     .then(response => response.json());
 }
 
+// POST =  New item in the DB.
 const postAPIData = (type, data) => {
-  console.log('POST data:', type, data);
-}
+  return fetch(urlExtension.cie, {
+    method: 'post',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  }).then(function(response) {
+    return response.json();
+  }).catch(err => {
+    console.log('err', err);
+  })
+};
+
+// PUT =  Update item already in the DB.
+const updateAPIData = (type, data) => {
+  console.log('PUT data:', type, data);
+  return fetch(urlExtension.cie, {
+    method: 'put',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  }).then(function(response) {
+    return response.json();
+  }).catch(err => {
+    console.log('err', err);
+  })
+};
 
 export {
   getAPIData,

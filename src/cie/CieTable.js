@@ -1,6 +1,7 @@
 // Third party libs
 import React, { useState, useEffect } from "react";
-import { Table } from 'react-bootstrap';
+import { Table, Button } from 'react-bootstrap';
+import { baseEmptyCie } from '../utils/baseValue';
 
 // Local components
 import CompanyRowOptions from './CompanyRowOptions';
@@ -10,6 +11,7 @@ import { Spinner, DisplayError } from '../utils';
 export default function CieTable() {
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(undefined);
+  const [newCie, setNewCie] = useState({...baseEmptyCie});
 
   const [list, setList] = useState([]);
   const [activeId, setActiveId] = useState('');
@@ -51,13 +53,14 @@ export default function CieTable() {
     // .Then() remove the Item only instead of forcing a full fetch+refresh.
     setList(list.filter((item => item._id !== id)));
   }
-  
+
   if (fetching) return ( <Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
 
   return (
     <div>
-      <h1>LEN: {list.length}</h1>
+      <h1>LEN: {list.length}</h1> <Button>NEW</Button>
+      <CompanyRowOptions removeIdFromList={removeIdFromList} item={newCie}></CompanyRowOptions>
       <Table striped bordered hover>
         <thead onClick={() => showData('')}>
           <tr>

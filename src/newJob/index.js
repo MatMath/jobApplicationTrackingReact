@@ -8,7 +8,8 @@ import moment from 'moment';
 import CompanyRowOptions from '../cie/CompanyRowOptions';
 import RecruitersRowOptions from '../cie/RecruitersRowOptions';
 import { getAPIData, postAPIData } from '../apiEndpoint';
-import { Spinner, DisplayError } from "../utils";
+import { Spinner, DisplayError } from '../utils';
+import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
 
 const baseData = {
   _id: undefined,
@@ -27,31 +28,6 @@ const baseData = {
   cover_letter: undefined,
   offer: undefined,
   acceptedOffer: undefined,
-};
-
-const baseEmptyCie = {
-  _id: undefined,
-  name: undefined,
-  location: undefined,
-  gps: {
-    type: "Feature",
-    geometry: {
-      type: "Point",
-      coordinates: [0, 0],
-    },
-    properties: {
-      name: undefined,
-    }
-  },
-  contact: undefined,
-  link: undefined,
-};
-
-const baseEmptyRecruiters = {
-  _id:undefined,
-  cie:'',
-  name:'',
-  email:'',
 };
 
 const baseMeetingInfo = {
