@@ -20,7 +20,11 @@ export default function JobListContainer() {
 
   useEffect(() => {
     getAPIData('jobList').then((data) => {
-      setList(data);
+      setList(data.sort((a,b) => {
+        if (a.date === b.date) return 0;
+        if (a.date < b.date) return 1;
+        return -1;
+      }));
       setFetching(false);
     }).catch(err => {
       setError(err.code);

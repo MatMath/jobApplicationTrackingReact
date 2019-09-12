@@ -5,7 +5,7 @@ import { baseEmptyCie } from '../utils/baseValue';
 
 // Local components
 import CompanyRowOptions from './CompanyRowOptions';
-import { getAPIData } from '../apiEndpoint';
+import { getAPIData, postAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
 
 export default function CieTable() {
@@ -26,17 +26,38 @@ export default function CieTable() {
       setError(err.code);
     });
   }, []);
+  
+  const submitNewCompany = (data) => {
+    data.gps.properties.name = data.name; // TODO: fix in the BE.
+    postAPIData('cie', data)
+    .then((resp) => {
+      // TODO: Reset State to default
+      console.log('resp is:', resp);
+      setNewCie({...baseEmptyCie});
+    }).catch((err) => {
+      console.log(err);
+      this.setState({'pening': false});
+    });
+    // if no ID it could be inside a NEW Job or added from the CIE page... Save & adjust the ID
+  };
+
+  const updateExistingCie = (data) => {
+    console.log('UPDATE CIE:', data);
+    
+  }
+
 
   const showData = (id) => {
     if(activeId === id) return setActiveId('');
     return setActiveId(id);
   }
+  
 
   const renderDataRow = (item) => {
     if (item._id === activeId) {
       return (
         <tr key={item._id}><td colSpan='2'>
-          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item}></CompanyRowOptions>
+          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item} clickSaveBtn={updateExistingCie}></CompanyRowOptions>
         </td></tr>
       );
     };
@@ -60,7 +81,7 @@ export default function CieTable() {
   return (
     <div>
       <h1>LEN: {list.length}</h1> <Button>NEW</Button>
-      <CompanyRowOptions removeIdFromList={removeIdFromList} item={newCie}></CompanyRowOptions>
+      <CompanyRowOptions removeIdFromList={removeIdFromList} item={newCie}  clickSaveBtn={submitNewCompany}></CompanyRowOptions>
       <Table striped bordered hover>
         <thead onClick={() => showData('')}>
           <tr>
