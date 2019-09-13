@@ -54,4 +54,5 @@ const updateAPIData = (type, data) => {
 export {
   getAPIData,
   postAPIData,
+  updateAPIData,
 }

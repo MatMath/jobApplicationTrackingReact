@@ -5,13 +5,14 @@ import { baseEmptyCie } from '../utils/baseValue';
 
 // Local components
 import CompanyRowOptions from './CompanyRowOptions';
-import { getAPIData, postAPIData } from '../apiEndpoint';
+import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
 
 export default function CieTable() {
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(undefined);
   const [newCie, setNewCie] = useState({...baseEmptyCie});
+  const [showNewCie, setShowNewCie] = useState(false);
 
   const [list, setList] = useState([]);
   const [activeId, setActiveId] = useState('');
@@ -31,19 +32,27 @@ export default function CieTable() {
     data.gps.properties.name = data.name; // TODO: fix in the BE.
     postAPIData('cie', data)
     .then((resp) => {
-      // TODO: Reset State to default
-      console.log('resp is:', resp);
+      setShowNewCie(false);
       setNewCie({...baseEmptyCie});
+      // Easy: Re-Fetch the Data full page ????
+      // optimal: Get the ID back & insert to the list? 
     }).catch((err) => {
       console.log(err);
-      this.setState({'pening': false});
     });
     // if no ID it could be inside a NEW Job or added from the CIE page... Save & adjust the ID
   };
 
   const updateExistingCie = (data) => {
-    console.log('UPDATE CIE:', data);
-    
+    data.gps.properties.name = data.name; // TODO: fix in the BE.
+    updateAPIData('cie', data)
+    .then(() => {
+      setList(list.map(item => {
+        if (item._id === data._id) return data
+        return item;
+      }))
+    }).catch((err) => {
+      console.log(err);
+    });
   }
 
 
@@ -76,12 +85,12 @@ export default function CieTable() {
   }
 
   if (fetching) return ( <Spinner></Spinner>);
-  if(error) return (<DisplayError error={error}></DisplayError>);
+  if (error) return (<DisplayError error={error}></DisplayError>);
 
   return (
     <div>
-      <h1>LEN: {list.length}</h1> <Button>NEW</Button>
-      <CompanyRowOptions removeIdFromList={removeIdFromList} item={newCie}  clickSaveBtn={submitNewCompany}></CompanyRowOptions>
+      <h1>LEN: {list.length}</h1> <Button onClick={() => setShowNewCie(!showNewCie)}>{(showNewCie)? 'Hide': 'Add new'}</Button>
+      {(showNewCie)? <CompanyRowOptions removeIdFromList={removeIdFromList} item={newCie}  clickSaveBtn={submitNewCompany}></CompanyRowOptions>: ''}
       <Table striped bordered hover>
         <thead onClick={() => showData('')}>
           <tr>
