@@ -1,6 +1,9 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 
+// Local components
+import DeleteConfirmationBtn from '../utils/DeleteConfirmationBtn';
+
 export default class CompanyRowOptions extends React.Component {
   constructor(props) {
     super(props);
@@ -81,11 +84,7 @@ export default class CompanyRowOptions extends React.Component {
         <Col className="spread">
           {/* Show Save only when not pristine? */}
           <Button variant="outline-success" type="submit"> Save </Button>
-          {/* I no ID then dont display Delete Button??? */}
-          <Button 
-            variant="outline-danger"
-            onClick={() => this.props.removeIdFromList(this.state.item._id)}>Delete
-          </Button>
+          <DeleteConfirmationBtn data={this.state.item} type="cie" parentCloseHandler={this.props.removeIdFromList}></DeleteConfirmationBtn>
         </Col>
       </Row>}
     </Form>

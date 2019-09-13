@@ -36,7 +36,6 @@ const postAPIData = (type, data) => {
 
 // PUT =  Update item already in the DB.
 const updateAPIData = (type, data) => {
-  console.log('PUT data:', type, data);
   return fetch(urlExtension[type], {
     method: 'put',
     mode: 'cors',
@@ -51,8 +50,25 @@ const updateAPIData = (type, data) => {
   })
 };
 
+// PUT =  Update item already in the DB.
+const deleteAPIData = (type, id) => {
+  // WARN USER
+  return fetch(`${urlExtension[type]}/${id}`, {
+    method: 'delete',
+    mode: 'cors',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  }).then(function(response) {
+    return response.json();
+  }).catch(err => {
+    console.log('err', err);
+  })
+};
+
 export {
   getAPIData,
   postAPIData,
   updateAPIData,
+  deleteAPIData,
 }

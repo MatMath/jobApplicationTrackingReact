@@ -76,11 +76,9 @@ export default function CieTable() {
       </tr>
     );
   }
-
-  const removeIdFromList = (id) => {
-    // Send a API request to the BE
-    // .Then() remove the Item only instead of forcing a full fetch+refresh.
-    setList(list.filter((item => item._id !== id)));
+  const removeIdFromList = (data) => {
+    // Remove the Item only instead of forcing a full fetch+refresh.
+    setList(list.filter((item => item._id !== data._id)));
   }
 
   if (fetching) return ( <Spinner></Spinner>);

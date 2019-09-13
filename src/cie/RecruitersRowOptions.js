@@ -1,6 +1,8 @@
 import React from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
 
+import DeleteConfirmationBtn from '../utils/DeleteConfirmationBtn';
+
 export default class RecruitersRowOptions extends React.Component {
   constructor(props) {
     super(props);
@@ -59,10 +61,7 @@ export default class RecruitersRowOptions extends React.Component {
         {(this.props.noaction)? "": <Row>
           <Col className="spread">
             <Button variant="outline-success" type="submit"> Save </Button>
-            <Button 
-              variant="outline-danger"
-              onClick={() => this.props.removeIdFromList(this.state.item._id)}>Delete
-            </Button>
+            <DeleteConfirmationBtn data={this.state.item} type="recruiters" parentCloseHandler={this.props.removeIdFromList}></DeleteConfirmationBtn>
           </Col>
         </Row>}
       </Form>
