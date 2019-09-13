@@ -1,18 +1,18 @@
 // Third party libs
 import React, { useState, useEffect } from "react";
 import { Table, Button } from 'react-bootstrap';
-import { baseEmptyCie } from '../utils/baseValue';
 
 // Local components
 import CompanyRowOptions from './CompanyRowOptions';
-import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
+import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
+import { baseEmptyCie } from '../utils/baseValue';
 
 export default function CieTable() {
   const [fetching, setFetching] = useState(true);
   const [error, setError] = useState(undefined);
-  const [newCie, setNewCie] = useState({...baseEmptyCie});
-  const [showNewCie, setShowNewCie] = useState(false);
+  const [newItem, setNewItem] = useState({...baseEmptyCie});
+  const [showNew, setShowNew] = useState(false);
 
   const [list, setList] = useState([]);
   const [activeId, setActiveId] = useState('');
@@ -28,12 +28,12 @@ export default function CieTable() {
     });
   }, []);
   
-  const submitNewCompany = (data) => {
+  const submitNew = (data) => {
     data.gps.properties.name = data.name; // TODO: fix in the BE.
     postAPIData('cie', data)
     .then((resp) => {
-      setShowNewCie(false);
-      setNewCie({...baseEmptyCie});
+      setShowNew(false);
+      setNewItem({...baseEmptyCie});
       // Easy: Re-Fetch the Data full page ????
       // optimal: Get the ID back & insert to the list? 
     }).catch((err) => {
@@ -42,7 +42,7 @@ export default function CieTable() {
     // if no ID it could be inside a NEW Job or added from the CIE page... Save & adjust the ID
   };
 
-  const updateExistingCie = (data) => {
+  const updateExisting = (data) => {
     data.gps.properties.name = data.name; // TODO: fix in the BE.
     updateAPIData('cie', data)
     .then(() => {
@@ -61,19 +61,18 @@ export default function CieTable() {
     return setActiveId(id);
   }
   
-
   const renderDataRow = (item) => {
     if (item._id === activeId) {
       return (
         <tr key={item._id}><td colSpan='2'>
-          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item} clickSaveBtn={updateExistingCie}></CompanyRowOptions>
+          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item} clickSaveBtn={updateExisting}></CompanyRowOptions>
         </td></tr>
       );
     };
     return (
-      <tr key={item._id}>
-        <td onClick={() => showData(item._id)}>{item.name}</td>
-        <td onClick={() => showData(item._id)}>{item.location}</td>
+      <tr key={item._id} onClick={() => showData(item._id)}>
+        <td>{item.name}</td>
+        <td>{item.location}</td>
       </tr>
     );
   }
@@ -89,8 +88,8 @@ export default function CieTable() {
 
   return (
     <div>
-      <h1>LEN: {list.length}</h1> <Button onClick={() => setShowNewCie(!showNewCie)}>{(showNewCie)? 'Hide': 'Add new'}</Button>
-      {(showNewCie)? <CompanyRowOptions removeIdFromList={removeIdFromList} item={newCie}  clickSaveBtn={submitNewCompany}></CompanyRowOptions>: ''}
+      <h1>LEN: {list.length}</h1> <Button onClick={() => setShowNew(!showNew)}>{(showNew)? 'Hide': 'Add new'}</Button>
+      {(showNew)? <CompanyRowOptions removeIdFromList={() => setShowNew(false)} item={newItem}  clickSaveBtn={submitNew}></CompanyRowOptions>: ''}
       <Table striped bordered hover>
         <thead onClick={() => showData('')}>
           <tr>

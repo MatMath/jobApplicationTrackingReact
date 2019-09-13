@@ -20,7 +20,7 @@ const getAPIData = (type, id) => {
 
 // POST =  New item in the DB.
 const postAPIData = (type, data) => {
-  return fetch(urlExtension.cie, {
+  return fetch(urlExtension[type], {
     method: 'post',
     mode: 'cors',
     headers: {
@@ -37,7 +37,7 @@ const postAPIData = (type, data) => {
 // PUT =  Update item already in the DB.
 const updateAPIData = (type, data) => {
   console.log('PUT data:', type, data);
-  return fetch(urlExtension.cie, {
+  return fetch(urlExtension[type], {
     method: 'put',
     mode: 'cors',
     headers: {

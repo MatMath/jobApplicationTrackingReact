@@ -5,6 +5,8 @@ export default class RecruitersRowOptions extends React.Component {
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.clickSaveBtn = props.clickSaveBtn;
+
     this.state = {
       item: props.item,
     };
@@ -16,7 +18,7 @@ export default class RecruitersRowOptions extends React.Component {
   }
   handleSubmit(event) {
     event.preventDefault();
-    // TODO: Trigger a refresh Top level when done? or simply replace it from the list?.
+    this.clickSaveBtn(this.state.item);
   }
   render() {
     return (
