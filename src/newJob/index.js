@@ -1,6 +1,6 @@
 // Third party libs
 import React, { useState, useEffect } from "react";
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Form, ButtonGroup, Button, Row, Col } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead'
 import moment from 'moment';
 
@@ -81,6 +81,10 @@ export default function NewJobContainer(props) {
     return setData({...data, [name]:value});
   }
 
+  const trueFalseClick = (key, value = !data[key]) => {    
+    return setData({...data, [key]:value});
+  }
+
   // TypeAhead helper
   const setCieTypeahead = (item) => {
     if (item.length > 0 && typeof item[0] === 'string') {
@@ -152,6 +156,8 @@ export default function NewJobContainer(props) {
 
   if(fetching) return (<Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
+  console.log('rendering Data:', data);
+  
   return (
   <div className='container main-data'>
     <h1>New application</h1>
@@ -166,6 +172,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Add a new company: "
             
+            defaultInputValue={data.company}
             labelKey="company"
             options={companyNameList}
             placeholder="Choose an existing company..."
@@ -182,6 +189,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Add a new recruiter: "
             
+            defaultInputValue={data.recruiters}
             labelKey="recruiter"
             options={recruiters}
             placeholder="Choose recruiters..."
@@ -211,6 +219,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Title of the position: "
             
+            defaultInputValue={data.title}
             labelKey="title"
             options={typeOfPosition}
             placeholder="Enter a new Position..."
@@ -227,6 +236,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Add new website: "
             
+            defaultInputValue={data.website}
             labelKey="website"
             options={websiteList}
             placeholder="Found on what website:"
@@ -265,16 +275,10 @@ export default function NewJobContainer(props) {
       <Form.Group as={Row}>
         <Form.Label column sm="2">Did you apply</Form.Label>
         <Col sm="10">
-          {/* Change that to a cuter Slider button???? */}
-          <Form.Check 
-            custom
-            name="application"
-            type='checkbox'
-            id='custom-checkbox'
-            value={data.application}
-            label='Of course I did!!!'
-            onChange={changeKey}
-          />
+          <ButtonGroup aria-label="Apply Q">
+            <Button variant={(data.application === true)? 'success' : 'outline-success'} onClick={() => trueFalseClick('application', true)}>Yes</Button>
+            <Button variant={(data.application === false)? 'danger' : 'outline-danger'} onClick={() => trueFalseClick('application', false)}>Not yet</Button>
+          </ButtonGroup>
         </Col>
       </Form.Group>
 
