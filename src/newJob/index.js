@@ -10,6 +10,7 @@ import RecruitersRowOptions from '../cie/RecruitersRowOptions';
 import { getAPIData, postAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
 import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
+import MeetingListInfo from './MeetingListInfo';
 
 const baseData = {
   _id: undefined,
@@ -142,6 +143,27 @@ export default function NewJobContainer(props) {
     }
   };
 
+  const removeParticipant = (index, name) => {
+    let meetings = data.meeting;
+    meetings[index].participants = meetings[index].participants.filter(item => (item !== name));
+    return setData({...data, meetings: meetings});
+  }
+
+  const updateMeeting = (index, event) => {
+    
+    const {name, value} = event.target;
+    const meeting = data.meeting[index];
+    if (name === 'newname' && value) {
+      meeting.newname = "";
+      meeting.participants.push(value);
+    } else {
+      meeting[name] = value;
+    }
+
+    const meetings = data.meeting;
+    meeting[index] = meeting;
+    return setData({...data, meeting: meetings});
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -281,6 +303,23 @@ export default function NewJobContainer(props) {
           </ButtonGroup>
         </Col>
       </Form.Group>
+
+      <Form.Group as={Row}>
+        <Form.Label column sm="2">Received and answer</Form.Label>
+        <Col sm="10">
+          <ButtonGroup aria-label="got-answer">
+            <Button variant={(data.answer_receive === true)? 'success' : 'outline-success'} onClick={() => trueFalseClick('answer_receive', true)}>Yes</Button>
+            <Button variant={(data.answer_receive === false)? 'danger' : 'outline-danger'} onClick={() => trueFalseClick('answer_receive', false)}>Not yet</Button>
+          </ButtonGroup>
+        </Col>
+      </Form.Group>
+
+      {data.meeting.map((item, index) => (<MeetingListInfo 
+          key={index}
+          removeParticipant={(value) => removeParticipant(index, value)}
+          updateMeeting={(event) => updateMeeting(index, event)}
+          data={item}>
+          </MeetingListInfo>))}
 
       <Form.Group as={Row}>
         <Form.Label column sm="2">Notes</Form.Label>
