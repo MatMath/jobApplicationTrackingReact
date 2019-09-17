@@ -2,7 +2,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, ButtonGroup, Button, Row, Col } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead'
-import moment from 'moment';
 
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
@@ -12,32 +11,8 @@ import { Spinner, DisplayError } from '../utils';
 import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
 import MeetingListInfo from './MeetingListInfo';
 
-const baseData = {
-  _id: undefined,
-  location: undefined,
-  website: undefined,
-  applicationType: undefined,
-  recruiters: undefined,
-  company: undefined,
-  title: undefined,
-  description: undefined,
-  date: moment().format('YYYY-MM-DD'), // The "input" need the specific STRING format of YYYY-MM-DD not the Date object. 
-  application: false,
-  answer_receive: false,
-  meeting: [],
-  notes: undefined,
-  cover_letter: undefined,
-  offer: undefined,
-  acceptedOffer: undefined,
-};
-
-const baseMeetingInfo = {
-  date: undefined,
-  participants: [],
-  purpose: undefined,
-  challenge: undefined,
-  notes: undefined,
-};
+// Data
+import { baseData, baseMeetingInfo }  from './jsonData';
 
 export default function NewJobContainer(props) {
   const {id} = props.match.params;
@@ -57,7 +32,6 @@ export default function NewJobContainer(props) {
   const [typeOfPosition, setTypeOfPosition] = useState(['Front End Eng', 'NodeJs Eng', 'Senior Front-end', 'Senior Backend', 'Fullstack', 'Senior Fullstack']); // Get from API
   const [companyNameList, setCompanyNameList] = useState([]);
   const [addNewCie, setAddNewCie] = useState(baseEmptyCie);
-  // const [meetingInfo, setMeetingInfo] = useState(baseMeetingInfo);
   
   useEffect(() => {
     Promise.all([getAPIData('cie'), getAPIData('param'), getAPIData('recruiters'), getAPIData('jobId', id)])
@@ -163,6 +137,10 @@ export default function NewJobContainer(props) {
     const meetings = data.meeting;
     meeting[index] = meeting;
     return setData({...data, meeting: meetings});
+  };
+
+  const addMeeting = () => {
+    return setData({...data, meeting: [...data.meeting, {...baseMeetingInfo, participants: []}]});
   };
 
   const handleSubmit = (event) => {
@@ -320,6 +298,8 @@ export default function NewJobContainer(props) {
           updateMeeting={(event) => updateMeeting(index, event)}
           data={item}>
           </MeetingListInfo>))}
+
+      <Button variant="outline-success" onClick={() => addMeeting()}>ADD Meeting</Button>
 
       <Form.Group as={Row}>
         <Form.Label column sm="2">Notes</Form.Label>
