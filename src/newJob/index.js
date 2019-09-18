@@ -6,7 +6,7 @@ import { Typeahead } from 'react-bootstrap-typeahead'
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
 import RecruitersRowOptions from '../cie/RecruitersRowOptions';
-import { getAPIData, postAPIData } from '../apiEndpoint';
+import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
 import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
 import MeetingListInfo from './MeetingListInfo';
@@ -22,7 +22,7 @@ export default function NewJobContainer(props) {
   const [error, setError] = useState(undefined);
   
   // Display handling
-  const [data, setData] = useState(baseData);
+  const [data, setData] = useState({...baseData});
   const [cie, setCie] = useState([]); // Original company from the API if we need to extreact from it. 
   
   const [recruiters, setRecruiters] = useState([]);
@@ -111,9 +111,10 @@ export default function NewJobContainer(props) {
     if (item.length > 0 && typeof item[0] === 'string') {
       return setData({...data, [key]: item[0]});
     }
+
     // "Add new" option
     if (item.length > 0) {
-      return setData({...data, [key]: item[0].title});
+      return setData({...data, [key]: item[0][key]});
     }
   };
 
@@ -124,7 +125,6 @@ export default function NewJobContainer(props) {
   }
 
   const updateMeeting = (index, event) => {
-    
     const {name, value} = event.target;
     const meeting = data.meeting[index];
     if (name === 'newname' && value) {
@@ -135,7 +135,7 @@ export default function NewJobContainer(props) {
     }
 
     const meetings = data.meeting;
-    meeting[index] = meeting;
+    meetings[index] = meeting;
     return setData({...data, meeting: meetings});
   };
 
@@ -145,18 +145,36 @@ export default function NewJobContainer(props) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    const apiCall = [];
+    let tmp = data;
+    tmp.company = (addNewCie.name)? addNewCie.name: tmp.company;
+    
+    // Update or Add new Job.
+    apiCall[0] = (data._id)? updateAPIData('jobList', data): postAPIData('jobList', data);
+    
     // Save the NEW copmpany if it is a new one
+    if (addNewCie.name && !addNewCie._id) { 
+      apiCall[1] = postAPIData('cie', addNewCie);
+    }
+    
     // Save the Recruiters if it is a new one -> addNewRecruiters
-    // Then save/Resave the new Job
+    if (addNewRecruiters.cie && !addNewRecruiters._id) {
+      apiCall[2] = postAPIData('recruiters', addNewRecruiters);
+    }
 
-    setAddNewRecruiters(baseEmptyRecruiters);
-    setAddNewCie(baseEmptyCie)
-    // TODO: Trigger a refresh Top level when done. ie: blank data
+    Promise.all(apiCall).then((result) => {
+      setData({...baseData});
+      setAddNewCie(baseEmptyCie);
+      setAddNewRecruiters(baseEmptyRecruiters);
+    }).catch(err => {
+      // TODO: Toast an error!
+      console.log('err is: ', err);
+    })
+    
   };
 
   if(fetching) return (<Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
-  console.log('rendering Data:', data);
   
   return (
   <div className='container main-data'>
@@ -319,13 +337,14 @@ export default function NewJobContainer(props) {
         <Col sm="10">
           <Form.Control
             plaintext
-            required
             defaultValue={data.cover_letter}
             name="cover_letter"
             onChange={changeKey}
           />
         </Col>
       </Form.Group>
+
+      <Button variant="outline-success" type="submit"> Save </Button>
 
     </Form>
   </div>

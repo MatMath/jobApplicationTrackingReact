@@ -33,7 +33,6 @@ export default function MeetingListInfo(props) {
           <Col sm="2">
             <Form.Control
               plaintext
-              required
               defaultValue={props.data.newname}
               name="newname"
               onBlur={props.updateMeeting}
