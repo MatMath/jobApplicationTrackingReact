@@ -77,7 +77,7 @@ export default function NewJobContainer(props) {
     if (addNewCie.name) return (
       <div>
         <Button onClick={() => setAddNewCie(baseEmptyCie)}>Use existing company</Button>
-        <CompanyRowOptions noaction={true} item={addNewCie}></CompanyRowOptions>
+        <CompanyRowOptions noaction={true} item={addNewCie} onChange={setAddNewCie}></CompanyRowOptions>
         <hr></hr>
       </div>
       );
@@ -154,6 +154,7 @@ export default function NewJobContainer(props) {
     
     // Save the NEW copmpany if it is a new one
     if (addNewCie.name && !addNewCie._id) { 
+      addNewCie.gps.properties.name = addNewCie.name; // TODO: fix in the BE.
       apiCall[1] = postAPIData('cie', addNewCie);
     }
     

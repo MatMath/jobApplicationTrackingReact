@@ -1,43 +1,41 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from 'react-bootstrap';
 
 // Local components
 import DeleteConfirmationBtn from '../utils/DeleteConfirmationBtn';
 
-export default class CompanyRowOptions extends React.Component {
-  constructor(props) {
-    super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.clickSaveBtn = props.clickSaveBtn;
+export default function CompanyRowOptions (props) {
+  const [item, setItem] = useState(props.item);
+
+  const changeKey = (key, value) => {
+    const tmp = {...item, [key]:value};
     
-    this.state = {
-      item: props.item,
-    };
+    if (props.onChange) { props.onChange(tmp); }
+    setItem(tmp);
   }
-  changeKey(key, value) {
-    const tmp = {...this.state.item, [key]:value};
-    this.setState({'item': tmp});
-  }
-  changeGps(index, value) {
-    let tmp = {...this.state.item};
+
+  const changeGps = (index, value) => {
+    let tmp = {...item};
     tmp.gps.geometry.coordinates[index] = value;
-    this.setState({'item': tmp});
+    if (props.onChange) { props.onChange(tmp); }
+    setItem(tmp);
   }
-  handleSubmit(event) {
+
+  const handleSubmit = (event) => {
     event.preventDefault();
-    this.clickSaveBtn(this.state.item);
+    props.clickSaveBtn(item);
   }
-  render() {
+
   return (
-    <Form onSubmit={this.handleSubmit}>
+    <Form onSubmit={(e) => handleSubmit(e)}>
       <Form.Group as={Row} controlId="cieName">
         <Form.Label column sm="2"> Company Name: </Form.Label>
         <Col sm="10">
           <Form.Control 
             plaintext
             required
-            value={this.state.item.name}
-            onChange={(e) => this.changeKey('name', e.target.value)}
+            value={item.name}
+            onChange={(e) => changeKey('name', e.target.value)}
             />
         </Col>
       </Form.Group>
@@ -48,8 +46,8 @@ export default class CompanyRowOptions extends React.Component {
           <Form.Control
             plaintext
             required
-            value={this.state.item.location}
-            onChange={(e) => this.changeKey('location', e.target.value)}
+            value={item.location}
+            onChange={(e) => changeKey('location', e.target.value)}
             />
         </Col>
       </Form.Group>
@@ -64,8 +62,8 @@ export default class CompanyRowOptions extends React.Component {
         <Col sm="4">
           <Form.Control
             type="number"
-            value={this.state.item.gps.geometry.coordinates[0]}
-            onChange={(e) => this.changeGps(0, e.target.value)}
+            value={item.gps.geometry.coordinates[0]}
+            onChange={(e) => changeGps(0, e.target.value)}
             name="latitude"
             />
         </Col>
@@ -74,20 +72,19 @@ export default class CompanyRowOptions extends React.Component {
         <Col sm="4">
           <Form.Control
             type="number"
-            value={this.state.item.gps.geometry.coordinates[1]}
-            onChange={(e) => this.changeGps(1, e.target.value)}
+            value={item.gps.geometry.coordinates[1]}
+            onChange={(e) => changeGps(1, e.target.value)}
             name="longitude"
           />
         </Col>
       </Form.Group>
-      {(this.props.noaction)? "": <Row>
+      {(props.noaction)? "": <Row>
         <Col className="spread">
           {/* Show Save only when not pristine? */}
           <Button variant="outline-success" type="submit"> Save </Button>
-          <DeleteConfirmationBtn data={this.state.item} type="cie" parentCloseHandler={this.props.removeIdFromList}></DeleteConfirmationBtn>
+          <DeleteConfirmationBtn data={item} type="cie" parentCloseHandler={props.removeIdFromList}></DeleteConfirmationBtn>
         </Col>
       </Row>}
     </Form>
-  )
-  }
+  );
 }
