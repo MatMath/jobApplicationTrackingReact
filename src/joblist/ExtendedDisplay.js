@@ -1,7 +1,10 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom'
-
 import { Row, Col, Button } from 'react-bootstrap';
+
+// Local Component
+import DeleteConfirmationBtn from '../utils/DeleteConfirmationBtn';
+
 
 function ExtendedDisplay(props) {
   const editThis = (id) => {
@@ -27,7 +30,7 @@ function ExtendedDisplay(props) {
         <Row>
           <Col className="spread">
             <Button variant="outline-info" onClick={() => editThis(props.value._id)}>Edit</Button>
-            <Button variant="outline-danger" onClick={() => props.removeIdFromList(props.value._id)}>Delete</Button>
+            <DeleteConfirmationBtn data={props.value} label={props.value.company} type="jobList" parentCloseHandler={props.removeIdFromList}></DeleteConfirmationBtn>
           </Col>
         </Row>
       </td>

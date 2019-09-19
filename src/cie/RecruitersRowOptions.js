@@ -61,7 +61,7 @@ export default class RecruitersRowOptions extends React.Component {
         {(this.props.noaction)? "": <Row>
           <Col className="spread">
             <Button variant="outline-success" type="submit"> Save </Button>
-            <DeleteConfirmationBtn data={this.state.item} type="recruiters" parentCloseHandler={this.props.removeIdFromList}></DeleteConfirmationBtn>
+            <DeleteConfirmationBtn data={this.state.item} label={this.state.item.name} type="recruiters" parentCloseHandler={this.props.removeIdFromList}></DeleteConfirmationBtn>
           </Col>
         </Row>}
       </Form>

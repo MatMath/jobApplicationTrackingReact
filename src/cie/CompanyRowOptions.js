@@ -82,7 +82,7 @@ export default function CompanyRowOptions (props) {
         <Col className="spread">
           {/* Show Save only when not pristine? */}
           <Button variant="outline-success" type="submit"> Save </Button>
-          <DeleteConfirmationBtn data={item} type="cie" parentCloseHandler={props.removeIdFromList}></DeleteConfirmationBtn>
+          <DeleteConfirmationBtn data={item} type="cie" label={item.name} parentCloseHandler={props.removeIdFromList}></DeleteConfirmationBtn>
         </Col>
       </Row>}
     </Form>

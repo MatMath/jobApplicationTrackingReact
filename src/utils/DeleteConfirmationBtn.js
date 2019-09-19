@@ -31,7 +31,7 @@ export default function DeleteConfirmationBtn(props) {
         <Modal.Header closeButton>
           <Modal.Title>Deleting Item</Modal.Title>
         </Modal.Header>
-        <Modal.Body>Are you sure you want to delete: <i>{props.data.name}</i>? <strong>It is Irreversible</strong></Modal.Body>
+        <Modal.Body>Are you sure you want to delete: <i>{props.label}</i>? <strong>It is Irreversible</strong></Modal.Body>
         <Modal.Footer>
           <Button variant="primary" onClick={() => handleClose(false)}> Cancel </Button>
           <Button variant="danger" onClick={() => handleClose(true)}> Yes Delete </Button>
