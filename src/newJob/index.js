@@ -1,7 +1,9 @@
 // Third party libs
 import React, { useState, useEffect } from "react";
+import { connect } from 'react-redux'
 import { Form, ButtonGroup, Button, Row, Col } from 'react-bootstrap';
 import { Typeahead } from 'react-bootstrap-typeahead'
+import deepcopy from 'deepcopy';
 
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
@@ -11,10 +13,12 @@ import { Spinner, DisplayError } from '../utils';
 import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
 import MeetingListInfo from './MeetingListInfo';
 
-// Data
-import { baseData, baseMeetingInfo }  from './jsonData';
+// Redux Data
+import { modBaseJob, resetBaseJob } from '../store/actions';
 
-export default function NewJobContainer(props) {
+import { baseMeetingInfo }  from './jsonData';
+
+function NewJobContainer(props) {
   const {id} = props.match.params;
  
   // Async URL params handling
@@ -22,7 +26,6 @@ export default function NewJobContainer(props) {
   const [error, setError] = useState(undefined);
   
   // Display handling
-  const [data, setData] = useState({...baseData});
   const [cie, setCie] = useState([]); // Original company from the API if we need to extreact from it. 
   
   const [recruiters, setRecruiters] = useState([]);
@@ -41,7 +44,7 @@ export default function NewJobContainer(props) {
       setWebsiteList(arr[1].website);
       setTypeOfPosition(arr[1].title);
       setRecruiters(arr[2].map((item) => item.cie));
-      if(arr[3]) { setData({...data, ...arr[3]}); }
+      if(arr[3]) { props.modBaseJob({...props.data, ...arr[3]}); }
       setFetching(false);
     })
     .catch((err) => {
@@ -52,24 +55,24 @@ export default function NewJobContainer(props) {
   
   const changeKey = (event) => {
     const {name, value, type} = event.target;
-    if (type === 'checkbox') return setData({...data, [name]:!data[name]});
-    return setData({...data, [name]:value});
+    if (type === 'checkbox') return props.modBaseJob({...props.data, [name]:!props.data[name]});
+    return props.modBaseJob({...props.data, [name]:value});
   }
 
-  const trueFalseClick = (key, value = !data[key]) => {    
-    return setData({...data, [key]:value});
+  const trueFalseClick = (key, value = !props.data[key]) => {
+    return props.modBaseJob({...props.data, [key]:value});
   }
 
   // TypeAhead helper
   const setCieTypeahead = (item) => {
     if (item.length > 0 && typeof item[0] === 'string') {
-      setAddNewCie(baseEmptyCie);
-      return setData({...data, company: item[0]});
+      setAddNewCie(deepcopy(baseEmptyCie));
+      return props.modBaseJob({...props.data, company: item[0]});
     }
     // Add new company
     if (item.length > 0) {
       const name = item[0].company;
-      setAddNewCie({...baseEmptyCie, name});
+      setAddNewCie({...deepcopy(baseEmptyCie), name});
     }
   };
 
@@ -85,8 +88,8 @@ export default function NewJobContainer(props) {
 
   const setRecruiterTypeahead = (item) => {
     if (item.length > 0 && typeof item[0] === 'string') {
-      setAddNewRecruiters(baseEmptyRecruiters);
-      return setData({...data, recruiters: item[0]});
+      setAddNewRecruiters(deepcopy(baseEmptyRecruiters));
+      return props.modBaseJob({...props.data, recruiters: item[0]});
     }
     // Add new recruiters
     if (item.length > 0) {
@@ -109,24 +112,24 @@ export default function NewJobContainer(props) {
 
   const setKeyTypeahead = (item, key) => {
     if (item.length > 0 && typeof item[0] === 'string') {
-      return setData({...data, [key]: item[0]});
+      return props.modBaseJob({...props.data, [key]: item[0]});
     }
 
     // "Add new" option
     if (item.length > 0) {
-      return setData({...data, [key]: item[0][key]});
+      return props.modBaseJob({...props.data, [key]: item[0][key]});
     }
   };
 
   const removeParticipant = (index, name) => {
-    let meetings = data.meeting;
+    let meetings = props.data.meeting;
     meetings[index].participants = meetings[index].participants.filter(item => (item !== name));
-    return setData({...data, meetings: meetings});
+    return props.modBaseJob({...props.data, meetings: meetings});
   }
 
   const updateMeeting = (index, event) => {
     const {name, value} = event.target;
-    const meeting = data.meeting[index];
+    const meeting = props.data.meeting[index];
     if (name === 'newname' && value) {
       meeting.newname = "";
       meeting.participants.push(value);
@@ -134,23 +137,23 @@ export default function NewJobContainer(props) {
       meeting[name] = value;
     }
 
-    const meetings = data.meeting;
+    const meetings = props.data.meeting;
     meetings[index] = meeting;
-    return setData({...data, meeting: meetings});
+    return props.modBaseJob({...props.data, meeting: meetings});
   };
 
   const addMeeting = () => {
-    return setData({...data, meeting: [...data.meeting, {...baseMeetingInfo, participants: []}]});
+    return props.modBaseJob({...props.data, meeting: [...props.data.meeting, {...baseMeetingInfo, participants: []}]});
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const apiCall = [];
-    let tmp = data;
+    let tmp = props.data;
     tmp.company = (addNewCie.name)? addNewCie.name: tmp.company;
     
     // Update or Add new Job.
-    apiCall[0] = (data._id)? updateAPIData('jobList', data): postAPIData('jobList', data);
+    apiCall[0] = (props.data._id)? updateAPIData('jobList', props.data): postAPIData('jobList', props.data);
     
     // Save the NEW copmpany if it is a new one
     if (addNewCie.name && !addNewCie._id) { 
@@ -164,9 +167,13 @@ export default function NewJobContainer(props) {
     }
 
     Promise.all(apiCall).then((result) => {
-      setData({...baseData});
+      console.log('Base data:');
+      
+      props.resetBaseJob();
       setAddNewCie(baseEmptyCie);
       setAddNewRecruiters(baseEmptyRecruiters);
+      console.log('REset everything');
+      props.history.push(`/job/`);
     }).catch(err => {
       // TODO: Toast an error!
       console.log('err is: ', err);
@@ -176,6 +183,7 @@ export default function NewJobContainer(props) {
 
   if(fetching) return (<Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
+  console.log('Render:', props.data);
   
   return (
   <div className='container main-data'>
@@ -191,7 +199,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Add a new company: "
             
-            defaultInputValue={data.company}
+            defaultInputValue={props.data.company}
             labelKey="company"
             options={companyNameList}
             placeholder="Choose an existing company..."
@@ -208,7 +216,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Add a new recruiter: "
             
-            defaultInputValue={data.recruiters}
+            defaultInputValue={props.data.recruiters}
             labelKey="recruiter"
             options={recruiters}
             placeholder="Choose recruiters..."
@@ -223,7 +231,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            defaultValue={data.location}
+            defaultValue={props.data.location}
             name="location"
             onChange={changeKey}
           />
@@ -238,7 +246,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Title of the position: "
             
-            defaultInputValue={data.title}
+            defaultInputValue={props.data.title}
             labelKey="title"
             options={typeOfPosition}
             placeholder="Enter a new Position..."
@@ -255,7 +263,7 @@ export default function NewJobContainer(props) {
             allowNew
             newSelectionPrefix="Add new website: "
             
-            defaultInputValue={data.website}
+            defaultInputValue={props.data.website}
             labelKey="website"
             options={websiteList}
             placeholder="Found on what website:"
@@ -270,7 +278,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            defaultValue={data.description}
+            defaultValue={props.data.description}
             name="description"
             onChange={changeKey}
           />
@@ -284,7 +292,7 @@ export default function NewJobContainer(props) {
             plaintext
             type="date"
             required
-            value={data.date}
+            value={props.data.date}
             name="date"
             onChange={changeKey}
           />
@@ -295,8 +303,8 @@ export default function NewJobContainer(props) {
         <Form.Label column sm="2">Did you apply</Form.Label>
         <Col sm="10">
           <ButtonGroup aria-label="Apply Q">
-            <Button variant={(data.application === true)? 'success' : 'outline-success'} onClick={() => trueFalseClick('application', true)}>Yes</Button>
-            <Button variant={(data.application === false)? 'danger' : 'outline-danger'} onClick={() => trueFalseClick('application', false)}>Not yet</Button>
+            <Button variant={(props.data.application === true)? 'success' : 'outline-success'} onClick={() => trueFalseClick('application', true)}>Yes</Button>
+            <Button variant={(props.data.application === false)? 'danger' : 'outline-danger'} onClick={() => trueFalseClick('application', false)}>Not yet</Button>
           </ButtonGroup>
         </Col>
       </Form.Group>
@@ -305,13 +313,13 @@ export default function NewJobContainer(props) {
         <Form.Label column sm="2">Received and answer</Form.Label>
         <Col sm="10">
           <ButtonGroup aria-label="got-answer">
-            <Button variant={(data.answer_receive === true)? 'success' : 'outline-success'} onClick={() => trueFalseClick('answer_receive', true)}>Yes</Button>
-            <Button variant={(data.answer_receive === false)? 'danger' : 'outline-danger'} onClick={() => trueFalseClick('answer_receive', false)}>Not yet</Button>
+            <Button variant={(props.data.answer_receive === true)? 'success' : 'outline-success'} onClick={() => trueFalseClick('answer_receive', true)}>Yes</Button>
+            <Button variant={(props.data.answer_receive === false)? 'danger' : 'outline-danger'} onClick={() => trueFalseClick('answer_receive', false)}>Not yet</Button>
           </ButtonGroup>
         </Col>
       </Form.Group>
 
-      {data.meeting.map((item, index) => (<MeetingListInfo 
+      {props.data.meeting.map((item, index) => (<MeetingListInfo 
           key={index}
           removeParticipant={(value) => removeParticipant(index, value)}
           updateMeeting={(event) => updateMeeting(index, event)}
@@ -326,7 +334,7 @@ export default function NewJobContainer(props) {
           <Form.Control
             as="textarea"
             rows="4"
-            defaultValue={data.notes}
+            defaultValue={props.data.notes}
             name="notes"
             onChange={changeKey}
           />
@@ -338,7 +346,7 @@ export default function NewJobContainer(props) {
         <Col sm="10">
           <Form.Control
             plaintext
-            defaultValue={data.cover_letter}
+            defaultValue={props.data.cover_letter}
             name="cover_letter"
             onChange={changeKey}
           />
@@ -351,3 +359,12 @@ export default function NewJobContainer(props) {
   </div>
   )
 }
+
+const mapStateToProps = (props) => ({
+  data: props.newJob,
+});
+
+export default connect(
+  mapStateToProps,
+  { modBaseJob }
+)(NewJobContainer)
