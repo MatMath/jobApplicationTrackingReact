@@ -3,24 +3,24 @@ import { MODIFY_BASE_JOB_DATA, RESET_BASE_JOB_DATA } from "../actions/actionType
 
 const initialState = {
   _id: undefined,
-  location: undefined,
-  website: undefined,
-  applicationType: undefined,
-  recruiters: undefined,
-  company: undefined,
-  title: undefined,
-  description: undefined,
+  location: '',
+  website: '',
+  applicationType: '',
+  recruiters: '',
+  company: '',
+  title: '',
+  description: '',
   date: moment().format('YYYY-MM-DD'), // The "input" need the specific STRING format of YYYY-MM-DD not the Date object. 
   application: false,
   answer_receive: false,
   meeting: [],
-  notes: undefined,
-  cover_letter: undefined,
-  offer: undefined,
-  acceptedOffer: undefined,
+  notes: '',
+  cover_letter: '',
+  offer: '',
+  acceptedOffer: '',
 };
 
-export default function(state = initialState, action) {
+export default function(state = {...initialState}, action) {
   switch (action.type) {
     case MODIFY_BASE_JOB_DATA: {
       return {
@@ -29,6 +29,8 @@ export default function(state = initialState, action) {
       };
     }
     case RESET_BASE_JOB_DATA: {
+      console.log('I reset all Data', initialState);
+      
       return { ...initialState };
     }
     default:

@@ -35,6 +35,8 @@ function NewJobContainer(props) {
   const [typeOfPosition, setTypeOfPosition] = useState(['Front End Eng', 'NodeJs Eng', 'Senior Front-end', 'Senior Backend', 'Fullstack', 'Senior Fullstack']); // Get from API
   const [companyNameList, setCompanyNameList] = useState([]);
   const [addNewCie, setAddNewCie] = useState(baseEmptyCie);
+
+  const localRef = {};
   
   useEffect(() => {
     Promise.all([getAPIData('cie'), getAPIData('param'), getAPIData('recruiters'), getAPIData('jobId', id)])
@@ -166,14 +168,19 @@ function NewJobContainer(props) {
       apiCall[2] = postAPIData('recruiters', addNewRecruiters);
     }
 
+    // Ref inside the promise chain is lost for some reason.
+    localRef.company.getInstance().clear();
+    localRef.recruiter.getInstance().clear();
+    localRef.title.getInstance().clear();
+    localRef.website.getInstance().clear();
+    
     Promise.all(apiCall).then((result) => {
-      console.log('Base data:');
-      
       props.resetBaseJob();
       setAddNewCie(baseEmptyCie);
       setAddNewRecruiters(baseEmptyRecruiters);
-      console.log('REset everything');
       props.history.push(`/job/`);
+      // Reset all typeahead.
+      
     }).catch(err => {
       // TODO: Toast an error!
       console.log('err is: ', err);
@@ -183,7 +190,6 @@ function NewJobContainer(props) {
 
   if(fetching) return (<Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
-  console.log('Render:', props.data);
   
   return (
   <div className='container main-data'>
@@ -196,6 +202,7 @@ function NewJobContainer(props) {
         <Col sm="10">
           <Typeahead
             id="company"
+            ref={ref => localRef.company = ref}
             allowNew
             newSelectionPrefix="Add a new company: "
             
@@ -213,6 +220,7 @@ function NewJobContainer(props) {
         <Col sm="10">
           <Typeahead
             id="recruiter"
+            ref={ref => localRef.recruiter = ref}
             allowNew
             newSelectionPrefix="Add a new recruiter: "
             
@@ -231,7 +239,7 @@ function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            defaultValue={props.data.location}
+            value={props.data.location}
             name="location"
             onChange={changeKey}
           />
@@ -243,6 +251,7 @@ function NewJobContainer(props) {
         <Col sm="10">
           <Typeahead
             id="title"
+            ref={ref => localRef.title = ref}
             allowNew
             newSelectionPrefix="Title of the position: "
             
@@ -260,6 +269,7 @@ function NewJobContainer(props) {
         <Col sm="10">
         <Typeahead
             id="website"
+            ref={ref => localRef.website = ref}
             allowNew
             newSelectionPrefix="Add new website: "
             
@@ -278,7 +288,7 @@ function NewJobContainer(props) {
           <Form.Control
             plaintext
             required
-            defaultValue={props.data.description}
+            value={props.data.description}
             name="description"
             onChange={changeKey}
           />
@@ -334,7 +344,7 @@ function NewJobContainer(props) {
           <Form.Control
             as="textarea"
             rows="4"
-            defaultValue={props.data.notes}
+            value={props.data.notes}
             name="notes"
             onChange={changeKey}
           />
@@ -346,7 +356,7 @@ function NewJobContainer(props) {
         <Col sm="10">
           <Form.Control
             plaintext
-            defaultValue={props.data.cover_letter}
+            value={props.data.cover_letter}
             name="cover_letter"
             onChange={changeKey}
           />
@@ -366,5 +376,8 @@ const mapStateToProps = (props) => ({
 
 export default connect(
   mapStateToProps,
-  { modBaseJob }
+  { 
+    modBaseJob,
+    resetBaseJob,
+  }
 )(NewJobContainer)
