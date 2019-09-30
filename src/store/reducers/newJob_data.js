@@ -17,7 +17,7 @@ const initialState = {
   notes: '',
   cover_letter: '',
   offer: '',
-  acceptedOffer: '',
+  acceptedOffer: false,
 };
 
 export default function(state = {...initialState}, action) {
