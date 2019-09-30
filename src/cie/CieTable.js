@@ -10,51 +10,20 @@ import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
 import { baseEmptyCie } from '../utils/baseValue';
 
 // Redux
-import { getCieList } from '../store/actions/companyActions';
+import { getCieList, updateCie, submitNew } from '../store/actions/companyActions';
 
-function CieTable({error, fetching, list, getCieList}) {
-  // const [fetching, setFetching] = useState(true);
-  // const [error, setError] = useState(undefined);
+function CieTable({error, fetching, list, getCieList, updateCie, submitNew}) {
   const [newItem, setNewItem] = useState({...baseEmptyCie});
   const [showNew, setShowNew] = useState(false);
 
-  // const [list, setList] = useState([]);
-  const setList = () => {console.log('Old SetList');}
+  const setList = () => {console.log('Old SetList');} // TMP
+  
   const [activeId, setActiveId] = useState('');
 
   useEffect(() => {
-    console.log('Fetching here:');
     getCieList();
   }, []);
   
-  const submitNew = (data) => {
-    data.gps.properties.name = data.name; // TODO: fix in the BE.
-    postAPIData('cie', data)
-    .then((resp) => {
-      setShowNew(false);
-      setNewItem({...baseEmptyCie});
-      // Easy: Re-Fetch the Data full page ????
-      // optimal: Get the ID back & insert to the list? 
-    }).catch((err) => {
-      console.log(err);
-    });
-    // if no ID it could be inside a NEW Job or added from the CIE page... Save & adjust the ID
-  };
-
-  const updateExisting = (data) => {
-    data.gps.properties.name = data.name; // TODO: fix in the BE.
-    updateAPIData('cie', data)
-    .then(() => {
-      setList(list.map(item => {
-        if (item._id === data._id) return data
-        return item;
-      }))
-    }).catch((err) => {
-      console.log(err);
-    });
-  }
-
-
   const showData = (id) => {
     if(activeId === id) return setActiveId('');
     return setActiveId(id);
@@ -64,7 +33,7 @@ function CieTable({error, fetching, list, getCieList}) {
     if (item._id === activeId) {
       return (
         <tr key={item._id}><td colSpan='2'>
-          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item} clickSaveBtn={updateExisting}></CompanyRowOptions>
+          <CompanyRowOptions removeIdFromList={removeIdFromList} item={item} clickSaveBtn={updateCie}></CompanyRowOptions>
         </td></tr>
       );
     };
@@ -104,11 +73,15 @@ function CieTable({error, fetching, list, getCieList}) {
 
 const mapStateToProps = (props) => ({
   list: props.cieList,
+  fetching: props.utils.fetching,
+  error: props.utils.error,
 });
 
 export default connect(
   mapStateToProps,
   {
     getCieList,
+    updateCie,
+    submitNew,
   }
 )(CieTable)
