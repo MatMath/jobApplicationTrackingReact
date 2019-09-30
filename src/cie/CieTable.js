@@ -1,5 +1,6 @@
 // Third party libs
 import React, { useState, useEffect } from "react";
+import { connect } from 'react-redux'
 import { Table, Button } from 'react-bootstrap';
 
 // Local components
@@ -8,24 +9,22 @@ import { Spinner, DisplayError } from '../utils';
 import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
 import { baseEmptyCie } from '../utils/baseValue';
 
-export default function CieTable() {
-  const [fetching, setFetching] = useState(true);
-  const [error, setError] = useState(undefined);
+// Redux
+import { getCieList } from '../store/actions/companyActions';
+
+function CieTable({error, fetching, list, getCieList}) {
+  // const [fetching, setFetching] = useState(true);
+  // const [error, setError] = useState(undefined);
   const [newItem, setNewItem] = useState({...baseEmptyCie});
   const [showNew, setShowNew] = useState(false);
 
-  const [list, setList] = useState([]);
+  // const [list, setList] = useState([]);
+  const setList = () => {console.log('Old SetList');}
   const [activeId, setActiveId] = useState('');
 
   useEffect(() => {
-    getAPIData('cie').then((data) => {
-      setList(data.sort((a,b) => a.name.localeCompare(b.name)));
-      setFetching(false)
-    })
-    .catch(err => {
-      setFetching(false);
-      setError(err.code);
-    });
+    console.log('Fetching here:');
+    getCieList();
   }, []);
   
   const submitNew = (data) => {
@@ -80,10 +79,10 @@ export default function CieTable() {
     // Remove the Item only instead of forcing a full fetch+refresh.
     setList(list.filter((item => item._id !== data._id)));
   }
-
+  
   if (fetching) return ( <Spinner></Spinner>);
   if (error) return (<DisplayError error={error}></DisplayError>);
-
+  
   return (
     <div>
       <h1>LEN: {list.length}</h1> <Button onClick={() => setShowNew(!showNew)}>{(showNew)? 'Hide': 'Add new'}</Button>
@@ -103,3 +102,13 @@ export default function CieTable() {
   )
 }
 
+const mapStateToProps = (props) => ({
+  list: props.cieList,
+});
+
+export default connect(
+  mapStateToProps,
+  {
+    getCieList,
+  }
+)(CieTable)
