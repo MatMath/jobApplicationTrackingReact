@@ -4,10 +4,10 @@ import {
   CIE_SHOW_NEW_ITEM,
   CIE_REMOVE_LIST_ID,
   CIE_SET_ACTIVE_ID,
-  API_FETCHING,
-  API_ERROR,
-} from './actionTypes';
-import { getAPIData, updateAPIData, postAPIData } from '../../apiEndpoint';
+} from './actionsType';
+import { API_FETCHING, API_ERROR } from '../store/actions/actionTypes';
+
+import { getAPIData, updateAPIData, postAPIData } from '../apiEndpoint';
 
 
 export const getCieList = () => (dispatch) => {

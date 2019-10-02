@@ -5,7 +5,7 @@ import {
   CIE_RESET_NEW_ITEM,
   CIE_SHOW_NEW_ITEM,
   CIE_SET_ACTIVE_ID,
-} from '../actions/actionTypes';
+} from './actionsType';
 
 const baseEmptyCie = {
   name :"",
@@ -38,7 +38,7 @@ export default function (state = initialState, action) {
         if (item._id === action.payload._id) return action.payload
         return item;
       });
-      return {...state, list};
+      return {...state, list, activeId: ''};
     case CIE_REMOVE_LIST_ID:
       return {...state, list: state.list.filter(item => item._id !== action.payload)};
     case CIE_RESET_NEW_ITEM:
