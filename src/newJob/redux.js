@@ -1,5 +1,5 @@
 import moment from 'moment';
-import { MODIFY_BASE_JOB_DATA, RESET_BASE_JOB_DATA } from "../actions/actionTypes";
+import { MODIFY_BASE_JOB_DATA, RESET_BASE_JOB_DATA } from "./actionTypes";
 
 const initialState = {
   _id: undefined,

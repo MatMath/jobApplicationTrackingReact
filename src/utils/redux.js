@@ -1,4 +1,4 @@
-import { API_FETCHING, API_ERROR } from '../actions/actionTypes';
+import { API_FETCHING, API_ERROR } from './actionTypes';
 
 const initial = {
   fetching: false,

@@ -14,7 +14,7 @@ import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
 import MeetingListInfo from './MeetingListInfo';
 
 // Redux Data
-import { modBaseJob, resetBaseJob } from '../store/actions';
+import { modBaseJob, resetBaseJob } from './actions';
 
 import { baseMeetingInfo }  from './jsonData';
 

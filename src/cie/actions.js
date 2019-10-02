@@ -5,7 +5,7 @@ import {
   CIE_REMOVE_LIST_ID,
   CIE_SET_ACTIVE_ID,
 } from './actionsType';
-import { API_FETCHING, API_ERROR } from '../store/actions/actionTypes';
+import { API_FETCHING, API_ERROR } from '../utils/actionTypes';
 
 import { getAPIData, updateAPIData, postAPIData } from '../apiEndpoint';
 

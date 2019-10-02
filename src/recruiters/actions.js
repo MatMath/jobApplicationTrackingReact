@@ -5,10 +5,9 @@ import {
   RECRUIT_REMOVE_LIST_ID,
   RECRUIT_SET_ACTIVE_ID,
 } from './actionsType';
-import { API_FETCHING, API_ERROR } from '../store/actions/actionTypes';
+import { API_FETCHING, API_ERROR } from '../utils/actionTypes';
 
 import { getAPIData, updateAPIData, postAPIData } from '../apiEndpoint';
-
 
 export const getList = () => (dispatch) => {
     dispatch({ type: API_FETCHING, payload: true });
