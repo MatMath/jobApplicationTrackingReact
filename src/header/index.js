@@ -11,6 +11,7 @@ function TopNavBar() {
       <Nav className="mr-auto">
         <Nav.Link href="/joblist">Job list</Nav.Link>
         <Nav.Link href="/cie">Companies</Nav.Link>
+        <Nav.Link href="/recruiters">Recruiters</Nav.Link>
         <Nav.Link href="/graph">Graph</Nav.Link>
       </Nav>
       <Form inline>

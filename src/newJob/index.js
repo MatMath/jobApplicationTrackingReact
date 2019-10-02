@@ -7,7 +7,7 @@ import deepcopy from 'deepcopy';
 
 // Local components
 import CompanyRowOptions from '../cie/CompanyRowOptions';
-import RecruitersRowOptions from '../cie/RecruitersRowOptions';
+import RecruitersRowOptions from '../recruiters/RecruitersRowOptions';
 import { getAPIData, postAPIData, updateAPIData } from '../apiEndpoint';
 import { Spinner, DisplayError } from '../utils';
 import { baseEmptyCie, baseEmptyRecruiters } from '../utils/baseValue';
