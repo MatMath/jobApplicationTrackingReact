@@ -11,10 +11,11 @@ function TopNavBar() {
       <Nav className="mr-auto">
         <Nav.Link href="/joblist">Job list</Nav.Link>
         <Nav.Link href="/cie">Companies</Nav.Link>
+        <Nav.Link href="/recruiters">Recruiters</Nav.Link>
         <Nav.Link href="/graph">Graph</Nav.Link>
       </Nav>
       <Form inline>
-        <Button variant="light">Logout</Button>
+        <Button href="/logout" variant="light">Logout</Button>
       </Form>
     </Navbar.Collapse>
     </Navbar>

@@ -7,6 +7,7 @@ import './App.css';
 import TopNavBar from './header';
 import JobListContainer from './joblist';
 import CieContainer from './cie';
+import RecruitersList from './recruiters';
 import NewJobContainer from './newJob';
 
 function App() {
@@ -16,9 +17,10 @@ function App() {
       <Router>
         <Route path='/joblist' component={JobListContainer} />
         <Route path='/cie' component={CieContainer} />
+        <Route path='/recruiters' component={RecruitersList} />
         <Route exact path={["/","/job/:id?"]} component={NewJobContainer} />
       </Router>
-      <div className="footer">Footer</div>
+      {/* <div className="footer">Footer</div> */}
     </div>
   );
 }

@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import { Table, Button } from 'react-bootstrap';
 
 // Local components
-import CompanyRowOptions from './CompanyRowOptions';
+import RecruitersRowOptions from './RecruitersRowOptions';
 import { Spinner, DisplayError } from '../utils';
 
 // Redux
 import {
-  getCieList,
-  updateCie,
+  getList,
+  updateExisting,
   submitNew,
   removeIdFromList,
   setShowNew,
@@ -26,28 +26,28 @@ function CieTable({
   activeId,
 
   // Functions
-  getCieList,
-  updateCie,
+  getList,
+  updateExisting,
   submitNew,
   removeIdFromList,
   setShowNew,
   setActiveId,
 }) {
 
-  useEffect(() => { getCieList() }, []);
+  useEffect(() => { getList() }, []);
   
   const renderDataRow = (item) => {
     if (item._id === activeId) {
       return (
         <tr key={item._id}><td colSpan='2'>
-          <CompanyRowOptions removeIdFromList={() => removeIdFromList(item._id)} item={item} clickSaveBtn={updateCie}></CompanyRowOptions>
+          <RecruitersRowOptions removeIdFromList={() => removeIdFromList(item._id)} item={item} clickSaveBtn={updateExisting}></RecruitersRowOptions>
         </td></tr>
       );
     };
     return (
       <tr key={item._id} onClick={() => setActiveId(item._id)}>
+        <td>{item.cie}</td>
         <td>{item.name}</td>
-        <td>{item.location}</td>
       </tr>
     );
   }
@@ -58,12 +58,12 @@ function CieTable({
   return (
     <div className='container main-data'>
       <h1>LEN: {list.length}</h1> <Button onClick={() => setShowNew(!showNew)}>{(showNew)? 'Hide': 'Add new'}</Button>
-      {(showNew)? <CompanyRowOptions removeIdFromList={() => setShowNew(false)} item={newItem}  clickSaveBtn={submitNew}></CompanyRowOptions>: ''}
+      {(showNew)? <RecruitersRowOptions removeIdFromList={() => setShowNew(false)} item={newItem}  clickSaveBtn={submitNew}></RecruitersRowOptions>: ''}
       <Table striped bordered hover>
         <thead onClick={() => setActiveId('')}>
           <tr>
-            <th>Name</th>
-            <th>Location</th>
+            <td>Company</td>
+            <td>Agent</td>
           </tr>
         </thead>
         <tbody>
@@ -75,10 +75,10 @@ function CieTable({
 }
 
 const mapStateToProps = (props) => ({
-  list: props.cieList.list,
-  newItem: props.cieList.newItem,
-  showNew: props.cieList.showNew,
-  activeId: props.cieList.activeId,
+  list: props.recruitList.list,
+  newItem: props.recruitList.newItem,
+  showNew: props.recruitList.showNew,
+  activeId: props.recruitList.activeId,
   fetching: props.utils.fetching,
   error: props.utils.error,
 });
@@ -86,8 +86,8 @@ const mapStateToProps = (props) => ({
 export default connect(
   mapStateToProps,
   {
-    getCieList,
-    updateCie,
+    getList,
+    updateExisting,
     submitNew,
     removeIdFromList,
     setShowNew,
