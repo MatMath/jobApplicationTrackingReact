@@ -46,8 +46,8 @@ function CieTable({
     };
     return (
       <tr key={item._id} onClick={() => setActiveId(item._id)}>
+        <td>{item.cie}</td>
         <td>{item.name}</td>
-        <td>{item.location}</td>
       </tr>
     );
   }

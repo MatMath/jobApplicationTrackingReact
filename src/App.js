@@ -20,7 +20,7 @@ function App() {
         <Route path='/recruiters' component={RecruitersList} />
         <Route exact path={["/","/job/:id?"]} component={NewJobContainer} />
       </Router>
-      <div className="footer">Footer</div>
+      {/* <div className="footer">Footer</div> */}
     </div>
   );
 }

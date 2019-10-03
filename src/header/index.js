@@ -15,7 +15,7 @@ function TopNavBar() {
         <Nav.Link href="/graph">Graph</Nav.Link>
       </Nav>
       <Form inline>
-        <Button variant="light">Logout</Button>
+        <Button href="/logout" variant="light">Logout</Button>
       </Form>
     </Navbar.Collapse>
     </Navbar>
