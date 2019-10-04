@@ -19,11 +19,12 @@ import { modBaseJob, resetBaseJob } from './actions';
 import { baseMeetingInfo }  from './jsonData';
 
 function NewJobContainer({
-  // data
+  // Data
   data,
   match,
   history,
-  // actions
+
+  // functions
   modBaseJob, resetBaseJob
 }) {
   const {id} = match.params;
@@ -171,8 +172,6 @@ function NewJobContainer({
     }
     
     // Save the Recruiters if it is a new one -> addNewRecruiters
-    console.log('addNewRecruiters:', addNewRecruiters);
-    
     if (addNewRecruiters.cie && !addNewRecruiters._id) {
       apiCall[2] = postAPIData('recruiters', addNewRecruiters);
     }
@@ -199,7 +198,6 @@ function NewJobContainer({
 
   if(fetching) return (<Spinner></Spinner>);
   if(error) return (<DisplayError error={error}></DisplayError>);
-  
   return (
   <div className='container main-data'>
     <h1>New application</h1>
@@ -220,6 +218,7 @@ function NewJobContainer({
             options={companyNameList}
             placeholder="Choose an existing company..."
             onChange={setCieTypeahead}
+            onBlur={(e) => setCieTypeahead([e.target.value])}
           />
         </Col>
       </Form.Group>)}
@@ -238,6 +237,7 @@ function NewJobContainer({
             options={recruiters}
             placeholder="Choose recruiters..."
             onChange={setRecruiterTypeahead}
+            onBlur={(e) => setRecruiterTypeahead([e.target.value])}
           />
         </Col>
       </Form.Group>)}
