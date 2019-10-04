@@ -35,7 +35,7 @@ export default function JobListContainer() {
   const renderDataRow = (item) => {
     if (item._id === activeId) return (
         <ExtendedDisplay
-          removeIdFromList={removeIdFromList}
+          removeIdFromList={() => removeIdFromList(item._id)}
           key={item._id}
           value={item}
           onClick={() => showData(item._id)}>
@@ -89,8 +89,7 @@ export default function JobListContainer() {
   }
 
   const removeIdFromList = (id) => {
-    // Send a API request to the BE
-    // .Then() remove the Item only instead of forcing a full fetch+refresh.
+    // Send a API request to the BE first
     setList(list.filter((item => item._id !== id)));
   }
 

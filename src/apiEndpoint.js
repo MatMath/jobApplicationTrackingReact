@@ -1,10 +1,11 @@
-const serverURL = 'http://localhost:3001';
+import { serverURL } from './config.js';
+
 const urlExtension = {
-  param: `${serverURL}/json/param`,
-  cie: `${serverURL}/json/cie`,
-  jobList: `${serverURL}/json/list`,
-  recruiters: `${serverURL}/json/recruiters`,
-  analytic: `${serverURL}/json/analytic`,
+  param: `${serverURL}/param`,
+  cie: `${serverURL}/cie`,
+  jobList: `${serverURL}/list`,
+  recruiters: `${serverURL}/recruiters`,
+  analytic: `${serverURL}/analytic`,
 }
 
 // NOTE: To optimize here we could add the Store to avoid multiple API call of the same route over and over.

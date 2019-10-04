@@ -1,0 +1,1 @@
+export const serverURL = process.env.API || 'http://localhost:3001/json';
